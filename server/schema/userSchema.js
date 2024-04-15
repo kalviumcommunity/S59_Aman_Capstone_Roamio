@@ -5,8 +5,16 @@ const data = new mongoose.Schema({
         type : String,
         // required : true
     },
+    email: {
+        type : String,
+        // required : true
+    },
+    password: {
+        type : String,
+        // required : true
+    },
     image : {
-        type : Number,
+        type : String,
         // required : true
     },
     mobileNumber : {
