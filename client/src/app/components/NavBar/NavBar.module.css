@@ -1,0 +1,46 @@
+.navbar{
+    width: 100vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 2px solid black;
+}
+.logo{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+}
+.logo h1{
+    font-size: 1.7rem;
+}
+.logo p{
+    font-size: 1rem;
+    letter-spacing: -.5px;
+    position: relative;
+    bottom: 5px;
+}
+.navigation ul{
+    width: 20vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    list-style-type: none;
+}
+.navigation ul a{
+    text-decoration: none;
+    color: rgba(19, 71, 46, 1);
+}
+.navigation ul li{
+    padding: 10px;
+    margin: 5px;
+    color: black;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+.navigation ul li:hover{
+    background-color: rgba(137, 182, 130, 0.33);
+    border-radius: 5px;
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+}
