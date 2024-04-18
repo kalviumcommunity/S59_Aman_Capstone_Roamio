@@ -5,6 +5,7 @@
     justify-content: space-between;
     padding: 10px;
     border-bottom: 2px solid black;
+    background-color: white;
 }
 .logo{
     display: flex;
@@ -14,6 +15,8 @@
 }
 .logo h1{
     font-size: 1.7rem;
+    position: relative;
+    top: 4px;
 }
 .logo p{
     font-size: 1rem;

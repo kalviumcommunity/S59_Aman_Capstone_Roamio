@@ -1,6 +1,6 @@
 import "./globals.css";
 import NavBar from "./components/NavBar/NavBar";
-
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 
 export const metadata = {
   title: "Roamio",
@@ -12,8 +12,10 @@ export default function RootLayout({ children }) {
     <html lang="en">
     <link rel="icon" href="/roamioLogo.png" sizes="any" />
       <body>
-        <NavBar />
-        {children}
+          <AppRouterCacheProvider>
+          <NavBar />
+          {children}
+        </AppRouterCacheProvider>
       </body>
     </html>
   );
