@@ -1,0 +1,27 @@
+#form{
+    width: 70vw;
+    /* height: auto; */
+    min-height: 70vh;
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 1px 3px 7px 3px rgba(137, 182, 137, 0.35);
+    border: 3px solid rgba(23, 98, 11, 0.91);
+}
+#container{
+    width: 70vw;
+    height: 70vh;
+    /* flex_row_center */
+}
+
+.que , .gif{
+    width: 50%;
+    height: 100%;
+}
+.que form{
+    height: 100%;
+    justify-content: space-evenly;
+}

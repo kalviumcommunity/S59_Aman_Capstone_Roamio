@@ -3,3 +3,27 @@
     margin: 0;
     box-sizing: border-box;
 }
+body{
+    min-height: 100vh;
+    width: 100vw;
+    overflow-x: hidden;
+    background-color: rgba(137, 182, 130, 0.17);
+}
+.lineVertical{
+    width: 3px;
+    height: 80%;
+    background-color: rgba(23, 98, 11, 0.91);
+
+}
+.flex_column_center{
+    display: flex; 
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.flex_row_center{
+    display: flex; 
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
