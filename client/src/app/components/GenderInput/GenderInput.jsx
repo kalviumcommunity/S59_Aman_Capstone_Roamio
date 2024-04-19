@@ -1,0 +1,62 @@
+import React from "react";
+import styles from "./GenderInput.module.css";
+import ArbutusSlab from "../../../../public/fonts/Arbutus_Slab";
+import Image from "next/image";
+import MaleVector from "../../../../public/maleVector.png";
+import FemaleVector from "../../../../public/femaleVector.png";
+import OtherVector from "../../../../public/othersGender.png";
+import FormHelperText from "@mui/material/FormHelperText";
+
+function GenderInput({ register, error }) {
+  return (
+    <div>
+      <div id={styles.genderInput} className="flex_row_center">
+        <input
+          type="radio"
+          name="gender"
+          id="male"
+          value="male"
+          className={styles.inputHidden}
+          {...register("gender")}
+        />
+        <label htmlFor="male">
+          <div>
+            <Image src={MaleVector} alt="male" height={120} width={110} />
+            <p className={ArbutusSlab.className}>Male</p>
+          </div>
+        </label>
+        <input
+          type="radio"
+          name="gender"
+          id="female"
+          value="female"
+          className={styles.inputHidden}
+          {...register("gender", { required: "Please select your gender" })}
+        />
+        <label for="female">
+          <div>
+            <Image src={FemaleVector} alt="female" height={120} width={100} />
+            <p className={ArbutusSlab.className}>Female</p>
+          </div>
+        </label>
+        <input
+          type="radio"
+          name="gender"
+          id="others"
+          value="others"
+          className={styles.inputHidden}
+          {...register("gender")}
+        />
+        <label htmlFor="others">
+          <div>
+            <Image src={OtherVector} alt="others" height={120} width={110} />
+            <p className={ArbutusSlab.className}>Others</p>
+          </div>
+        </label>
+      </div>
+      {error && <FormHelperText error>❗{error.message}</FormHelperText>}
+    </div>
+  );
+}
+
+export default GenderInput;

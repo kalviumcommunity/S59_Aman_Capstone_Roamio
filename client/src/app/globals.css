@@ -12,7 +12,7 @@ body{
 .lineVertical{
     width: 3px;
     height: 80%;
-    background-color: rgba(23, 98, 11, 0.91);
+    background-color: #17620be8;
 
 }
 .flex_column_center{
@@ -26,4 +26,12 @@ body{
     flex-direction: row;
     justify-content: center;
     align-items: center;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.MuiFormControl-root{
+    width: 30vw;
 }

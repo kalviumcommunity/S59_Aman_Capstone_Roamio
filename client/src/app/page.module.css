@@ -9,7 +9,7 @@
     background-color: white;
     border-radius: 5px;
     box-shadow: 1px 3px 7px 3px rgba(137, 182, 137, 0.35);
-    border: 3px solid rgba(23, 98, 11, 0.91);
+    border: 3px solid #17620be8;
 }
 #container{
     width: 70vw;
