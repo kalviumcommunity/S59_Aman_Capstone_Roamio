@@ -89,7 +89,7 @@ export default function Home() {
                 className="flex_column_center"
                 onSubmit={handleSubmit(onSubmit)}
               >
-              <p className={ArbutusSlab.className}>We're so happy you're here! Let's start this journey together. Get ready for fun, connections, and new adventures!</p>
+              <p className={`${ArbutusSlab.className} ${styles.brief}`}>We're so happy you're here! Let's start this journey together. Get ready for fun, connections, and new adventures!</p>
                 <TextField
                   error={!!errors.name}
                   helperText={errors.name ? errors.name.message : ""}
@@ -122,17 +122,20 @@ export default function Home() {
                 className="flex_column_center"
                 onSubmit={handleSubmit(onSubmit)}
               >
+              <p className={`${ArbutusSlab.className} ${styles.brief}`}>Create a strong password . Make sure no one can hack it 😉</p>
               <PasswordInput
                   name="password"
                   register={register}
                   error={errors.password}
                 />
+                <div>
                 <Button variant="contained" onClick={handleBack}>
                   Back
                 </Button>
                 <Button variant="contained" onClick={handleNext}>
                   Next
                 </Button>
+                </div>
               </form>
             </div>
           </div>
@@ -140,6 +143,7 @@ export default function Home() {
         {currentPage == 3 && (
           <div id={styles.container} className="flex_row_center">
           <div className={`${styles.gif} flex_column_center`}>
+          <p className={`${ArbutusSlab.className} ${styles.brief}`}>Choose a profile pic😉</p>
               <TextField
                 error={!!errors.image}
                 helperText={errors.image ? errors.image.message : ""}
@@ -155,21 +159,25 @@ export default function Home() {
                 className="flex_column_center"
                 onSubmit={handleSubmit(onSubmit)}
               >
+              <p className={`${ArbutusSlab.className} ${styles.brief}`}>What is your DOB?</p>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
               <MobileDatePicker
-                label="Select Your Birthdate"
-                id='dob'
-                defaultValue={dayjs("2005-02-25")}
-                {...register("dob", { required: "Date of birth is required" })}
+              label="Select Your Birthdate"
+              id='dob'
+              defaultValue={dayjs("2005-02-25")}
+              {...register("dob", { required: "Date of birth is required" })}
               />
-            </LocalizationProvider>
+              </LocalizationProvider>
+              <p className={`${ArbutusSlab.className} ${styles.brief}`}>Select your gender:</p>
             <GenderInput register={register} error={errors.gender} />
+            <div>
                 <Button variant="contained" onClick={handleBack}>
                   Back
                 </Button>
                 <Button variant="contained" onClick={handleNext}>
                   Next
                 </Button>
+                </div>
               </form>
             </div>
           </div>
@@ -184,6 +192,7 @@ export default function Home() {
                 onSubmit={handleSubmit(onSubmit)}
               >
                 <div>
+              <p className={`${ArbutusSlab.className} ${styles.brief}`}>Enter your mobile number :</p>
                   <TextField
                     error={!!errors.mobileNumber}
                     helperText={
@@ -198,12 +207,14 @@ export default function Home() {
                     })}
                   />
                 </div>
+                <div>
                 <Button variant="contained" onClick={handleBack}>
                   Back
                 </Button>
                 <Button type="submit" variant="contained">
                   Submit
                 </Button>
+                </div>
               </form>
             </div>
           </div>
