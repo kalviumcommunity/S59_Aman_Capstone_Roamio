@@ -20,6 +20,7 @@
 .que , .gif{
     width: 50%;
     height: 100%;
+    padding: 40px 15px;
 }
 .que form{
     height: 100%;
@@ -27,4 +28,9 @@
 }
 .brief{
     padding: 0px 20px;
+}
+.buttonBox{
+    display: flex;
+    justify-content: space-between;
+    width: 50%;
 }
