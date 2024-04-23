@@ -128,7 +128,7 @@ export default function Home() {
                   register={register}
                   error={errors.password}
                 />
-                <div>
+                <div className={styles.buttonBox}>
                 <Button variant="contained" onClick={handleBack}>
                   Back
                 </Button>
@@ -159,7 +159,7 @@ export default function Home() {
                 className="flex_column_center"
                 onSubmit={handleSubmit(onSubmit)}
               >
-              <p className={`${ArbutusSlab.className} ${styles.brief}`}>What is your DOB?</p>
+              <p className={`${ArbutusSlab.className} ${styles.brief}`}>What is your date of birth ? </p>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
               <MobileDatePicker
               label="Select Your Birthdate"
@@ -170,7 +170,7 @@ export default function Home() {
               </LocalizationProvider>
               <p className={`${ArbutusSlab.className} ${styles.brief}`}>Select your gender:</p>
             <GenderInput register={register} error={errors.gender} />
-            <div>
+            <div className={styles.buttonBox}>
                 <Button variant="contained" onClick={handleBack}>
                   Back
                 </Button>
@@ -191,8 +191,8 @@ export default function Home() {
                 className="flex_column_center"
                 onSubmit={handleSubmit(onSubmit)}
               >
-                <div>
               <p className={`${ArbutusSlab.className} ${styles.brief}`}>Enter your mobile number :</p>
+                <div>
                   <TextField
                     error={!!errors.mobileNumber}
                     helperText={
@@ -207,7 +207,7 @@ export default function Home() {
                     })}
                   />
                 </div>
-                <div>
+                <div className={styles.buttonBox}>
                 <Button variant="contained" onClick={handleBack}>
                   Back
                 </Button>
