@@ -15,7 +15,7 @@
 
 ## Deployed Link
 
-Experience Roamio live at: [Link will be updated after deploying the project](https://www.google.com)
+Experience Roamio live at: [www.roamio-aman.vercel.app](https://roamio-aman.vercel.app/)
 
 
 ## Tech-Stack
