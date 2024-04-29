@@ -12,6 +12,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import PasswordInput from "./components/Password";
 import GenderInput from "./components/GenderInput/GenderInput";
 import ArbutusSlab from "../../public/fonts/Arbutus_Slab";
+import Image from 'next/image'
+
 
 const theme = createTheme({
   palette: {
@@ -37,7 +39,7 @@ export default function Home() {
 
   const onSubmit = async (data) => {
     try {
-      console.log(data)
+      console.log(data);
       const response = await fetch("http://localhost:8081/users/add-user", {
         method: "POST",
         headers: {
@@ -62,7 +64,7 @@ export default function Home() {
     } else if (currentPage === 2) {
       validateFields = ["password"];
     } else if (currentPage === 3) {
-      validateFields = ["dob" , "gender"];
+      validateFields = ["dob", "gender"];
     } else if (currentPage === 4) {
       validateFields = ["mobileNumber"];
     }
@@ -89,7 +91,10 @@ export default function Home() {
                 className="flex_column_center"
                 onSubmit={handleSubmit(onSubmit)}
               >
-              <p className={`${ArbutusSlab.className} ${styles.brief}`}>We're so happy you're here! Let's start this journey together. Get ready for fun, connections, and new adventures!</p>
+                <p className={`${ArbutusSlab.className} ${styles.brief}`}>
+                  We're so happy you're here! Let's start this journey together.
+                  Get ready for fun, connections, and new adventures!
+                </p>
                 <TextField
                   error={!!errors.name}
                   helperText={errors.name ? errors.name.message : ""}
@@ -106,35 +111,43 @@ export default function Home() {
                   variant="outlined"
                   {...register("email", { required: "Email is required" })}
                 />
-                <Button variant="contained" onClick={handleNext}>
-                  Next
-                </Button>
+                <div className={styles.buttonBox}>
+                <div className={`${ArbutusSlab.className} flex_row_center `} id={styles.googleAuth}>
+                  <p><u>or sign up with</u> </p>
+                  <Image src='/google.png' width={70} height={25} alt='google' />
+                </div>
+                  <Button variant="contained" onClick={handleNext}>
+                    Next
+                  </Button>
+                </div>
               </form>
             </div>
           </div>
         )}
         {currentPage == 2 && (
           <div id={styles.container} className="flex_row_center">
-          <div className={styles.gif}></div>
+            <div className={styles.gif}></div>
             <div className="lineVertical"></div>
             <div className={styles.que}>
               <form
                 className="flex_column_center"
                 onSubmit={handleSubmit(onSubmit)}
               >
-              <p className={`${ArbutusSlab.className} ${styles.brief}`}>Create a strong password . Make sure no one can hack it 😉</p>
-              <PasswordInput
+                <p className={`${ArbutusSlab.className} ${styles.brief}`}>
+                  Create a strong password . Make sure no one can hack it 😉
+                </p>
+                <PasswordInput
                   name="password"
                   register={register}
                   error={errors.password}
                 />
                 <div className={styles.buttonBox}>
-                <Button variant="contained" onClick={handleBack}>
-                  Back
-                </Button>
-                <Button variant="contained" onClick={handleNext}>
-                  Next
-                </Button>
+                  <Button variant="contained" onClick={handleBack}>
+                    Back
+                  </Button>
+                  <Button variant="contained" onClick={handleNext}>
+                    Next
+                  </Button>
                 </div>
               </form>
             </div>
@@ -142,8 +155,10 @@ export default function Home() {
         )}
         {currentPage == 3 && (
           <div id={styles.container} className="flex_row_center">
-          <div className={`${styles.gif} flex_column_center`}>
-          <p className={`${ArbutusSlab.className} ${styles.brief}`}>Choose a profile pic😉</p>
+            <div className={`${styles.gif} flex_column_center`}>
+              <p className={`${ArbutusSlab.className} ${styles.brief}`}>
+                Choose a profile pic😉
+              </p>
               <TextField
                 error={!!errors.image}
                 helperText={errors.image ? errors.image.message : ""}
@@ -159,24 +174,30 @@ export default function Home() {
                 className="flex_column_center"
                 onSubmit={handleSubmit(onSubmit)}
               >
-              <p className={`${ArbutusSlab.className} ${styles.brief}`}>What is your date of birth ? </p>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <MobileDatePicker
-              label="Select Your Birthdate"
-              id='dob'
-              defaultValue={dayjs("2005-02-25")}
-              {...register("dob", { required: "Date of birth is required" })}
-              />
-              </LocalizationProvider>
-              <p className={`${ArbutusSlab.className} ${styles.brief}`}>Select your gender:</p>
-            <GenderInput register={register} error={errors.gender} />
-            <div className={styles.buttonBox}>
-                <Button variant="contained" onClick={handleBack}>
-                  Back
-                </Button>
-                <Button variant="contained" onClick={handleNext}>
-                  Next
-                </Button>
+                <p className={`${ArbutusSlab.className} ${styles.brief}`}>
+                  What is your date of birth ?{" "}
+                </p>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <MobileDatePicker
+                    label="Select Your Birthdate"
+                    id="dob"
+                    defaultValue={dayjs("2005-02-25")}
+                    {...register("dob", {
+                      required: "Date of birth is required",
+                    })}
+                  />
+                </LocalizationProvider>
+                <p className={`${ArbutusSlab.className} ${styles.brief}`}>
+                  Select your gender:
+                </p>
+                <GenderInput register={register} error={errors.gender} />
+                <div className={styles.buttonBox}>
+                  <Button variant="contained" onClick={handleBack}>
+                    Back
+                  </Button>
+                  <Button variant="contained" onClick={handleNext}>
+                    Next
+                  </Button>
                 </div>
               </form>
             </div>
@@ -184,14 +205,16 @@ export default function Home() {
         )}
         {currentPage == 4 && (
           <div id={styles.container} className="flex_row_center">
-          <div className={styles.gif}></div>
+            <div className={styles.gif}></div>
             <div className="lineVertical"></div>
             <div className={styles.que}>
               <form
                 className="flex_column_center"
                 onSubmit={handleSubmit(onSubmit)}
               >
-              <p className={`${ArbutusSlab.className} ${styles.brief}`}>Enter your mobile number :</p>
+                <p className={`${ArbutusSlab.className} ${styles.brief}`}>
+                  Enter your mobile number :
+                </p>
                 <div>
                   <TextField
                     error={!!errors.mobileNumber}
@@ -208,12 +231,12 @@ export default function Home() {
                   />
                 </div>
                 <div className={styles.buttonBox}>
-                <Button variant="contained" onClick={handleBack}>
-                  Back
-                </Button>
-                <Button type="submit" variant="contained">
-                  Submit
-                </Button>
+                  <Button variant="contained" onClick={handleBack}>
+                    Back
+                  </Button>
+                  <Button type="submit" variant="contained">
+                    Submit
+                  </Button>
                 </div>
               </form>
             </div>
