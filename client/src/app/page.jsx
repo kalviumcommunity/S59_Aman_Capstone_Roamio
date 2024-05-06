@@ -12,8 +12,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import PasswordInput from "./components/Password";
 import GenderInput from "./components/GenderInput/GenderInput";
 import ArbutusSlab from "../../public/fonts/Arbutus_Slab";
-import Image from 'next/image'
-
+import Image from "next/image";
 
 const theme = createTheme({
   palette: {
@@ -60,11 +59,11 @@ export default function Home() {
   const handleNext = async () => {
     let validateFields;
     if (currentPage === 1) {
-      validateFields = ["name", "email"];
+      validateFields = ["email"];
     } else if (currentPage === 2) {
-      validateFields = ["password"];
+      validateFields = ["name", "dob", "gender"];
     } else if (currentPage === 3) {
-      validateFields = ["dob", "gender"];
+      validateFields = ["password"];
     } else if (currentPage === 4) {
       validateFields = ["mobileNumber"];
     }
@@ -95,14 +94,7 @@ export default function Home() {
                   We're so happy you're here! Let's start this journey together.
                   Get ready for fun, connections, and new adventures!
                 </p>
-                <TextField
-                  error={!!errors.name}
-                  helperText={errors.name ? errors.name.message : ""}
-                  id="name-input"
-                  label="Name"
-                  variant="outlined"
-                  {...register("name", { required: "Name is required" })}
-                />
+
                 <TextField
                   error={!!errors.email}
                   helperText={errors.email ? errors.email.message : ""}
@@ -112,12 +104,22 @@ export default function Home() {
                   {...register("email", { required: "Email is required" })}
                 />
                 <div className={styles.buttonBox}>
-                <div className={`${ArbutusSlab.className} flex_row_center `} id={styles.googleAuth}>
-                  <p><u>or sign up with</u> </p>
-                  <Image src='/google.png' width={70} height={25} alt='google' />
-                </div>
+                  <div
+                    className={`${ArbutusSlab.className} flex_row_center `}
+                    id={styles.googleAuth}
+                  >
+                    <p>
+                      <u>or sign up with</u>{" "}
+                    </p>
+                    <Image
+                      src="/google.png"
+                      width={70}
+                      height={25}
+                      alt="google"
+                    />
+                  </div>
                   <Button variant="contained" onClick={handleNext}>
-                    Next
+                    Get Started
                   </Button>
                 </div>
               </form>
@@ -125,35 +127,6 @@ export default function Home() {
           </div>
         )}
         {currentPage == 2 && (
-          <div id={styles.container} className="flex_row_center">
-            <div className={styles.gif}></div>
-            <div className="lineVertical"></div>
-            <div className={styles.que}>
-              <form
-                className="flex_column_center"
-                onSubmit={handleSubmit(onSubmit)}
-              >
-                <p className={`${ArbutusSlab.className} ${styles.brief}`}>
-                  Create a strong password . Make sure no one can hack it 😉
-                </p>
-                <PasswordInput
-                  name="password"
-                  register={register}
-                  error={errors.password}
-                />
-                <div className={styles.buttonBox}>
-                  <Button variant="contained" onClick={handleBack}>
-                    Back
-                  </Button>
-                  <Button variant="contained" onClick={handleNext}>
-                    Next
-                  </Button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-        {currentPage == 3 && (
           <div id={styles.container} className="flex_row_center">
             <div className={`${styles.gif} flex_column_center`}>
               <p className={`${ArbutusSlab.className} ${styles.brief}`}>
@@ -174,9 +147,14 @@ export default function Home() {
                 className="flex_column_center"
                 onSubmit={handleSubmit(onSubmit)}
               >
-                <p className={`${ArbutusSlab.className} ${styles.brief}`}>
-                  What is your date of birth ?{" "}
-                </p>
+                <TextField
+                  error={!!errors.name}
+                  helperText={errors.name ? errors.name.message : ""}
+                  id="name-input"
+                  label="Name"
+                  variant="outlined"
+                  {...register("name", { required: "Name is required" })}
+                />
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <MobileDatePicker
                     label="Select Your Birthdate"
@@ -191,6 +169,36 @@ export default function Home() {
                   Select your gender:
                 </p>
                 <GenderInput register={register} error={errors.gender} />
+
+                <div className={styles.buttonBox}>
+                  <Button variant="contained" onClick={handleBack}>
+                    Back
+                  </Button>
+                  <Button variant="contained" onClick={handleNext}>
+                    Next
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+        {currentPage == 3 && (
+          <div id={styles.container} className="flex_row_center">
+            <div className={styles.gif}></div>
+            <div className="lineVertical"></div>
+            <div className={styles.que}>
+              <form
+                className="flex_column_center"
+                onSubmit={handleSubmit(onSubmit)}
+              >
+                <p className={`${ArbutusSlab.className} ${styles.brief}`}>
+                  Create a strong password 😉
+                </p>
+                <PasswordInput
+                  name="password"
+                  register={register}
+                  error={errors.password}
+                />
                 <div className={styles.buttonBox}>
                   <Button variant="contained" onClick={handleBack}>
                     Back
@@ -221,7 +229,6 @@ export default function Home() {
                     helperText={
                       errors.mobileNumber ? errors.mobileNumber.message : ""
                     }
-                    id="mobile-number-input"
                     label="Mobile Number"
                     type="number"
                     variant="outlined"
