@@ -35,7 +35,7 @@ export default function Home() {
   } = useForm();
   const [submitError, setSubmitError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-
+  const [email, setEmail] = useState(null);
   const onSubmit = async (data) => {
     try {
       console.log(data);
@@ -78,6 +78,36 @@ export default function Home() {
     setCurrentPage((prevPage) => prevPage - 1);
   };
 
+  const checkUserExistence = async (data) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8081/users/userExist?email=${encodeURIComponent(
+          data.email
+        )}`
+      );
+
+      if (!response.ok) {
+        const errorMessage = await response.json();
+        throw new Error(errorMessage.message);
+      }
+
+      const responseData = await response.json();
+      console.log(responseData)
+      if (!responseData.userFound) {
+        setCurrentPage(2);
+      } 
+      if (responseData.userFound){
+        setCurrentPage(5);
+      }
+    } catch (error) {
+      setSubmitError(error.message);
+      console.error(
+        "Error occurred while checking user existence:",
+        error.message
+      );
+    }
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <div id={styles.form}>
@@ -102,6 +132,7 @@ export default function Home() {
                   label="Email"
                   variant="outlined"
                   {...register("email", { required: "Email is required" })}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
                 <div className={styles.buttonBox}>
                   <div
@@ -118,7 +149,12 @@ export default function Home() {
                       alt="google"
                     />
                   </div>
-                  <Button variant="contained" onClick={handleNext}>
+                  <Button
+                    variant="contained"
+                    onClick={() => {
+                      checkUserExistence({ email });
+                    }}
+                  >
                     Get Started
                   </Button>
                 </div>
