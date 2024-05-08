@@ -46,7 +46,7 @@ userRoutes.get("/userExist", async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) {
       return res
-        .status(404)
+        .status(200)
         .json({ message: "User not found", userFound: false });
     }
     return res.status(200).json({ message: "User found", userFound: true });

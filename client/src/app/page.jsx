@@ -38,7 +38,7 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
-
+  const error = { message: submitError };
   const loginValidate = async ({ email, password }) => {
     try {
       const response = await fetch("http://localhost:8081/users/login", {
@@ -46,16 +46,18 @@ export default function Home() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: Json.stringify({ email, password }),
+        body: JSON.stringify({ email, password }),
       });
 
       if (!response.ok) {
-        console.log("Failed to log you in " + response);
+        const errorData = await response.json();
+        setSubmitError(errorData.message);
+        console.log(errorData.message);
       }
-
-      redirect("/explore");
+      {
+        response.ok && console.log("login successfull!");
+      }
     } catch (error) {
-      setSubmitError(error.message);
       console.error("Error occurred while logging in:", error.message);
     }
   };
@@ -90,9 +92,8 @@ export default function Home() {
     } else if (currentPage === 4) {
       validateFields = ["mobileNumber"];
     }
-
     const result = await trigger(validateFields);
-    if (result) {
+    if (result && currentPage != 1) {
       setCurrentPage((prevPage) => prevPage + 1);
     }
   };
@@ -116,9 +117,11 @@ export default function Home() {
 
       const responseData = await response.json();
       if (!responseData.userFound) {
+        handleNext();
         setCurrentPage(2);
       }
       if (responseData.userFound) {
+        handleNext();
         setCurrentPage(5);
       }
     } catch (error) {
@@ -153,6 +156,7 @@ export default function Home() {
                   {...register("email", { required: "Email is required" })}
                   onChange={(e) => setEmail(e.target.value)}
                 />
+                {submitError && <p style={{ color: "red" }}>{submitError}</p>}
                 <div className={styles.buttonBox}>
                   <div
                     className={`${ArbutusSlab.className} flex_row_center `}
@@ -320,18 +324,21 @@ export default function Home() {
                 </p>
                 <PasswordInput
                   name="password"
-                  error={errors.password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  register={register}
+                  error={error}
+                  setPassword={setPassword}
                 />
                 {submitError && <p style={{ color: "red" }}>{submitError}</p>}
 
                 <div className={styles.buttonBox}>
-                  <Button variant="contained" onClick={setCurrentPage(1)}>
+                  <Button variant="contained" onClick={() => setCurrentPage(1)}>
                     Back
                   </Button>
                   <Button
                     variant="contained"
-                    onClick={loginValidate({ email, password })}
+                    onClick={() => {
+                      loginValidate({ email, password });
+                    }}
                   >
                     Login
                   </Button>

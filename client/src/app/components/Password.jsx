@@ -6,13 +6,12 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import FormHelperText from "@mui/material/FormHelperText";
 
-const PasswordInput = ({ register, name, error }) => {
+const PasswordInput = ({ register, name, error, setPassword }) => {
   const [showPassword, setShowPassword] = React.useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
@@ -23,6 +22,7 @@ const PasswordInput = ({ register, name, error }) => {
         {...register(name, { required: "Password is required" })}
         type={showPassword ? "text" : "password"}
         placeholder="Enter your Password"
+        onChange={(e) => setPassword(e.target.value)}
         endAdornment={
           <IconButton
             onClick={togglePasswordVisibility}
@@ -38,11 +38,11 @@ const PasswordInput = ({ register, name, error }) => {
     </div>
   );
 };
-const StyledInput = styled(InputBase)(({ theme , error}) => ({
+const StyledInput = styled(InputBase)(({ theme, error }) => ({
   "& .MuiInputBase-input": {
     borderRadius: 4,
     position: "relative",
-    border: `1.5px solid ${error ? "red" : "" }`,
+    border: `1.5px solid ${error ? "red" : ""}`,
     fontSize: 16,
     width: "auto",
     padding: "10px 12px",
