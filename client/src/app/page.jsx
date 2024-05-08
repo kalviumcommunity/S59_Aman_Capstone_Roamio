@@ -13,6 +13,7 @@ import PasswordInput from "./components/Password";
 import GenderInput from "./components/GenderInput/GenderInput";
 import ArbutusSlab from "../../public/fonts/Arbutus_Slab";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
 const theme = createTheme({
   palette: {
@@ -36,9 +37,31 @@ export default function Home() {
   const [submitError, setSubmitError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [email, setEmail] = useState(null);
+  const [password, setPassword] = useState(null);
+
+  const loginValidate = async ({ email, password }) => {
+    try {
+      const response = await fetch("http://localhost:8081/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: Json.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        console.log("Failed to log you in " + response);
+      }
+
+      redirect("/explore");
+    } catch (error) {
+      setSubmitError(error.message);
+      console.error("Error occurred while logging in:", error.message);
+    }
+  };
+
   const onSubmit = async (data) => {
     try {
-      console.log(data);
       const response = await fetch("http://localhost:8081/users/add-user", {
         method: "POST",
         headers: {
@@ -92,19 +115,15 @@ export default function Home() {
       }
 
       const responseData = await response.json();
-      console.log(responseData)
       if (!responseData.userFound) {
         setCurrentPage(2);
-      } 
-      if (responseData.userFound){
+      }
+      if (responseData.userFound) {
         setCurrentPage(5);
       }
     } catch (error) {
       setSubmitError(error.message);
-      console.error(
-        "Error occurred while checking user existence:",
-        error.message
-      );
+      console.error(error.message);
     }
   };
 
@@ -140,7 +159,7 @@ export default function Home() {
                     id={styles.googleAuth}
                   >
                     <p>
-                      <u>or sign up with</u>{" "}
+                      <u>or sign up with &nbsp;</u>
                     </p>
                     <Image
                       src="/google.png"
@@ -234,6 +253,7 @@ export default function Home() {
                   name="password"
                   register={register}
                   error={errors.password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
                 <div className={styles.buttonBox}>
                   <Button variant="contained" onClick={handleBack}>
@@ -273,12 +293,47 @@ export default function Home() {
                     })}
                   />
                 </div>
+                {submitError && <p style={{ color: "red" }}>{submitError}</p>}
                 <div className={styles.buttonBox}>
                   <Button variant="contained" onClick={handleBack}>
                     Back
                   </Button>
                   <Button type="submit" variant="contained">
                     Submit
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+        {currentPage == 5 && (
+          <div id={styles.container} className="flex_row_center">
+            <div className={styles.gif}></div>
+            <div className="lineVertical"></div>
+            <div className={styles.que}>
+              <form
+                className="flex_column_center"
+                onSubmit={handleSubmit(onSubmit)}
+              >
+                <p className={`${ArbutusSlab.className} ${styles.brief}`}>
+                  Welcome back ! please enter your password to login
+                </p>
+                <PasswordInput
+                  name="password"
+                  error={errors.password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                {submitError && <p style={{ color: "red" }}>{submitError}</p>}
+
+                <div className={styles.buttonBox}>
+                  <Button variant="contained" onClick={setCurrentPage(1)}>
+                    Back
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={loginValidate({ email, password })}
+                  >
+                    Login
                   </Button>
                 </div>
               </form>
