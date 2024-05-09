@@ -4,3 +4,14 @@
   height: 89vh;
   border-right: 3px solid #17620be8;
 }
+
+.container div {
+  display: flex;
+  justify-content: space-evenly;
+  height: 15%;
+}
+
+.container div:first-child {
+  padding: 70px 0px;
+  height: 85%;
+}
