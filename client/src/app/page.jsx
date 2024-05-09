@@ -13,7 +13,7 @@ import PasswordInput from "./components/Password";
 import GenderInput from "./components/GenderInput/GenderInput";
 import ArbutusSlab from "../../public/fonts/Arbutus_Slab";
 import Image from "next/image";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const theme = createTheme({
   palette: {
@@ -39,6 +39,7 @@ export default function Home() {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const error = { message: submitError };
+  const router = useRouter();
   const loginValidate = async ({ email, password }) => {
     try {
       const response = await fetch("http://localhost:8081/users/login", {
@@ -53,12 +54,25 @@ export default function Home() {
         const errorData = await response.json();
         setSubmitError(errorData.message);
         console.log(errorData.message);
-      }
-      {
-        response.ok && console.log("login successfull!");
+        return false;
+      } else {
+        return true;
       }
     } catch (error) {
       console.error("Error occurred while logging in:", error.message);
+      throw error;
+    }
+  };
+
+  const handleLoginClick = async ({ email, password }) => {
+    try {
+      const loginSuccess = await loginValidate({ email, password });
+      if (loginSuccess) {
+        router.push("/user");
+        console.log("working");
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -337,7 +351,7 @@ export default function Home() {
                   <Button
                     variant="contained"
                     onClick={() => {
-                      loginValidate({ email, password });
+                      handleLoginClick({ email, password });
                     }}
                   >
                     Login

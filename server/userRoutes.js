@@ -72,7 +72,7 @@ userRoutes.post("/login", async (req, res) => {
         .status(401)
         .json({ message: "Incorrect password! .Please try again." });
     }
-    console.log(`${user.name} logged in successfully !🎉`);
+    console.log(`${user.name} verified successfully !🎉`);
     return res
       .status(200)
       .json({ message: `${user.name} logged in successfully !🎉` });
