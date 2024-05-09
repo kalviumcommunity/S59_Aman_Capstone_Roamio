@@ -4,6 +4,7 @@ const cors = require('cors')
 const port = 8081;
 const userRoutes = require('./userRoutes.js')
 const {connectDB , isConnected} = require('./db.js')
+const postRoutes = require('./postRoutes.js')
 require('dotenv').config()
 
 connectDB()
@@ -19,3 +20,4 @@ app.get('/',(req,res)=>{
     res.send('🚀Server started successfully')
 })
 app.use('/users',userRoutes);
+app.use('/posts',postRoutes)
