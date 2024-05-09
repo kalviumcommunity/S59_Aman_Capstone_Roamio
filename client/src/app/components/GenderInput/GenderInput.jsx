@@ -2,9 +2,6 @@ import React from "react";
 import styles from "./GenderInput.module.css";
 import ArbutusSlab from "../../../../public/fonts/Arbutus_Slab";
 import Image from "next/image";
-import MaleVector from "../../../../public/maleVector.png";
-import FemaleVector from "../../../../public/femaleVector.png";
-import OtherVector from "../../../../public/othersGender.png";
 import FormHelperText from "@mui/material/FormHelperText";
 
 function GenderInput({ register, error }) {
@@ -21,7 +18,7 @@ function GenderInput({ register, error }) {
         />
         <label htmlFor="male">
           <div>
-            <Image src={MaleVector} alt="male" height={120} width={110} />
+            <Image src="/maleVector.png" alt="male" height={120} width={110} />
             <p className={ArbutusSlab.className}>Male</p>
           </div>
         </label>
@@ -35,7 +32,12 @@ function GenderInput({ register, error }) {
         />
         <label for="female">
           <div>
-            <Image src={FemaleVector} alt="female" height={120} width={100} />
+            <Image
+              src="/femaleVector.png"
+              alt="female"
+              height={120}
+              width={100}
+            />
             <p className={ArbutusSlab.className}>Female</p>
           </div>
         </label>
@@ -49,7 +51,12 @@ function GenderInput({ register, error }) {
         />
         <label htmlFor="others">
           <div>
-            <Image src={OtherVector} alt="others" height={120} width={110} />
+            <Image
+              src="/othersGender.png"
+              alt="others"
+              height={120}
+              width={110}
+            />
             <p className={ArbutusSlab.className}>Others</p>
           </div>
         </label>
