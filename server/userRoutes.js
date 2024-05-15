@@ -1,6 +1,7 @@
 const express = require("express");
 const userRoutes = express.Router();
 const User = require("./schema/userSchema.js");
+const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 userRoutes.get("/", async (req, res) => {
@@ -40,6 +41,7 @@ userRoutes.post("/add-user", async (req, res) => {
       .json({ error: "An error occured while adding you to our database ." });
   }
 });
+
 userRoutes.get("/userExist", async (req, res) => {
   try {
     const { email } = req.query;
@@ -61,6 +63,7 @@ userRoutes.get("/userExist", async (req, res) => {
     });
   }
 });
+
 userRoutes.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -72,10 +75,13 @@ userRoutes.post("/login", async (req, res) => {
         .status(401)
         .json({ message: "Incorrect password! .Please try again." });
     }
+    const token = jwt.sign({ userId: user._id }, process.env.secret, {
+      expiresIn: "1h",
+    });
     console.log(`${user.name} verified successfully !🎉`);
     return res
       .status(200)
-      .json({ message: `${user.name} logged in successfully !🎉` });
+      .json({ message: `${user.name} logged in successfully !🎉`, token });
   } catch (error) {
     console.error("Error while logging in", error);
     return res.status(500).json({
