@@ -2,6 +2,7 @@ const express = require("express");
 const userRoutes = express.Router();
 const User = require("./schema/userSchema.js");
 const jwt = require("jsonwebtoken");
+const imageRouter = require("./uploadImage.js");
 require("dotenv").config();
 
 userRoutes.get("/", async (req, res) => {
@@ -90,4 +91,5 @@ userRoutes.post("/login", async (req, res) => {
   }
 });
 
+userRoutes.use("/uploadProfile", imageRouter);
 module.exports = userRoutes;

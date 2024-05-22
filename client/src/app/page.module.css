@@ -38,6 +38,6 @@
   border-radius: 5px;
 }
 #googleAuth:hover {
-  background-color: rgba(137, 182, 130, 0.18);
+  background-color: rgba(137, 182, 130, 0.17);
   cursor: pointer;
 }
