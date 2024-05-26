@@ -1,14 +1,10 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const postSchema = new mongoose.Schema({
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
     },
     collaborators: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -24,20 +20,28 @@ const postSchema = new mongoose.Schema({
             ref: 'User',
         },
         comment: {
-            type: String,
+            type: String
         }
     }],
     caption: {
-        type: String
-    },
-    heading: {
-        type: String
+        type: String,
+        //maxLength: 55
+        //required: true
     },
     location: {
         type: String
-    }
-});
+    },
+    isRoamioTrip: {
+        type: Boolean,
+        default: false
+    },
+    postImage: [{
+        type: String,
+        //required: true
+    }]
+}
+,{timestamps: true});
 
 const Post = mongoose.model('post', postSchema);
 
-module.exports = Post;
+export default Post;

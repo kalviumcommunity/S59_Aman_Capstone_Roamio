@@ -1,23 +1,30 @@
-const express = require('express');
-const app = express()
-const cors = require('cors')
-const port = 8081;
-const userRoutes = require('./userRoutes.js')
-const {connectDB , isConnected} = require('./db.js')
-const postRoutes = require('./postRoutes.js')
-require('dotenv').config()
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import userRoutes from "./userRoutes.js";
+import postRoutes from "./postRoutes.js";
+import { connectDB, isConnected } from "./db.js";
 
-connectDB()
-app.use(cors())
-app.use(express.json())
-app.listen(port,()=>{
-    console.log(`🚀server is running at http://localhost:${port}/`)
-    if(isConnected){
-        console.log("📦MongoDB Connected with Server , Successfully!")
-    }
-})
-app.get('/',(req,res)=>{
-    res.send('🚀Server started successfully')
-})
-app.use('/users',userRoutes);
-app.use('/posts',postRoutes)
+dotenv.config();
+
+const app = express();
+const port = process.env.PORT;
+
+connectDB();
+
+app.use(cors());
+app.use(express.json());
+
+app.listen(port, () => {
+  console.log(`🚀 Server is running at http://localhost:${port}/`);
+  if (isConnected()) {
+    console.log("📦 MongoDB Connected with Server, Successfully!");
+  }
+});
+
+app.get("/", (req, res) => {
+  res.send("🚀 Server started successfully");
+});
+
+app.use("/users", userRoutes);
+app.use("/posts", postRoutes);

@@ -1,9 +1,12 @@
-const express = require("express");
+import express from "express";
+import User from "./schema/userSchema.js";
+import jwt from "jsonwebtoken";
+import imageRouter from "./uploadImage.js";
+import dotenv from "dotenv";
+
+dotenv.config();
+
 const userRoutes = express.Router();
-const User = require("./schema/userSchema.js");
-const jwt = require("jsonwebtoken");
-const imageRouter = require("./uploadImage.js");
-require("dotenv").config();
 
 userRoutes.get("/", async (req, res) => {
   try {
@@ -36,10 +39,10 @@ userRoutes.post("/add-user", async (req, res) => {
     res.json(`${newUser.name} joined Roamio successfully.🎉`);
     console.log(`${newUser.name} joined Roamio successfully.🎉`);
   } catch (err) {
-    console.log("Error occured while adding the user " + err);
+    console.log("Error occurred while adding the user " + err);
     res
       .status(500)
-      .json({ error: "An error occured while adding you to our database ." });
+      .json({ error: "An error occurred while adding you to our database." });
   }
 });
 
@@ -68,15 +71,14 @@ userRoutes.get("/userExist", async (req, res) => {
 userRoutes.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-
     const user = await User.findOne({ email });
-    const passwordMatch = password == user.password;
+    const passwordMatch = password === user.password;
     if (!passwordMatch) {
       return res
         .status(401)
-        .json({ message: "Incorrect password! .Please try again." });
+        .json({ message: "Incorrect password! Please try again." });
     }
-    const token = jwt.sign({ userId: user._id }, process.env.secret, {
+    const token = jwt.sign({ userId: user._id }, process.env.SECRET, {
       expiresIn: "1h",
     });
     console.log(`${user.name} verified successfully !🎉`);
@@ -86,10 +88,11 @@ userRoutes.post("/login", async (req, res) => {
   } catch (error) {
     console.error("Error while logging in", error);
     return res.status(500).json({
-      message: "Internal server error encountered while logging a user in .",
+      message: "Internal server error encountered while logging a user in.",
     });
   }
 });
 
 userRoutes.use("/uploadProfile", imageRouter);
-module.exports = userRoutes;
+
+export default userRoutes;
