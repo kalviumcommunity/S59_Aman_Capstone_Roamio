@@ -1,12 +1,13 @@
-require("dotenv").config();
+import { config as dotenvConfig } from "dotenv";
+dotenvConfig();
 
-module.exports = {
-  firebaseConfig: {
-    apiKey: process.env.firebase_apiKey,
-    authDomain: process.env.firebase_authDomain,
-    projectId: process.env.firebase_projectId,
-    storageBucket: process.env.firebase_storageBucket,
-    messagingSenderId: process.env.firebase_messagingSenderId,
-    appId: process.env.firebase_appId,
-  },
+const firebaseConfig = {
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID,
 };
+
+export default { firebaseConfig };

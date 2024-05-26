@@ -11,5 +11,52 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.0"
+  },
+  "scripts": {
+    "dev": "nodemon server.js"
+  },
+  "name": "roamio-backend",
+  "version": "1.0.0",
+  "description": "Roamio is a digital platform that transforms the way people interact with travel experiences, connecting like-minded adventurers and providing comprehensive trip information",
+  "type": "module",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kalviumcommunity/S59_Aman_Capstone_Roamio.git",
+    "readme": "https://github.com/kalviumcommunity/S59_Aman_Capstone_Roamio#readme",
+    "backendDeploy": " https://s59-aman-capstone-roamio.onrender.com/",
+    "frontendDeploy": "https://iamroamio.vercel.app/"
+  },
+  "keywords": [
+    "travel",
+    "travelling",
+    "adventure",
+    "social media",
+    "trekking",
+    "trip booking",
+    "trip planning",
+    "travel community",
+    "travel experiences",
+    "trip discovery",
+    "nextjs",
+    "reactjs",
+    "expressjs",
+    "mongodb",
+    "firebase",
+    "JWT",
+    "oauth",
+    "real-time communication",
+    "socket.io",
+    "high-fidelity design",
+    "low-fidelity design",
+    "user profiles",
+    "trip safety",
+    "friend system",
+    "trip feedback"
+  ],
+  "author": "Aman Agrawal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kalviumcommunity/S59_Aman_Capstone_Roamio/issues"
   }
 }
