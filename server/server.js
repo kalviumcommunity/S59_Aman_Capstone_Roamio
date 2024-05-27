@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import userRoutes from "./userRoutes.js";
 import postRoutes from "./postRoutes.js";
 import { connectDB, isConnected } from "./db.js";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
@@ -12,8 +13,16 @@ const port = process.env.PORT;
 
 connectDB();
 
-app.use(cors());
-app.use(express.json());
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN,
+    credentials: true,
+  })
+);
+app.use(express.json({ limit: "16kb" }));
+app.use(express.urlencoded({ extended: true, limit: "16kb" }));
+app.use(express.static("public"));
+app.use(cookieParser());
 
 app.listen(port, () => {
   console.log(`🚀 Server is running at http://localhost:${port}/`);
