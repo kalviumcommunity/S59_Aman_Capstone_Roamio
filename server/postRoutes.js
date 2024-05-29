@@ -1,6 +1,8 @@
 import express from "express";
 import Post from "./schema/post.js";
 import dotenv from "dotenv";
+import UploadFileValidate from "./middlewares/UploadFileValidate.js"
+import { uploadPost } from "./controllers/post.controller.js";
 
 dotenv.config();
 
@@ -16,27 +18,7 @@ postRoutes.get("/", async (req, res) => {
   }
 });
 
-postRoutes.post("/uploadPost", async (req, res) => {
-  const newPost = new Post({
-    createdBy: req.body.createdBy,
-    collaborators: req.body.collaborators,
-    likes: req.body.likes,
-    comments: req.body.comments,
-    caption: req.body.caption,
-    heading: req.body.heading,
-    location: req.body.location,
-  });
-  try {
-    const savedPost = await newPost.save();
-    res.json(`${newPost.createdBy} uploaded a post successfully.🎉`);
-    console.log(`${newPost.createdBy} uploaded a post successfully.🎉`);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      error:
-        "An error occurred while posting the 'post' data. Internal server error.",
-    });
-  }
-});
+postRoutes.post("/uploadPost", UploadFileValidate.array('files', 10), uploadPost);
+
 
 export default postRoutes;
