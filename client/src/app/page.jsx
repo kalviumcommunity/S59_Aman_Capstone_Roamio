@@ -14,6 +14,8 @@ import GenderInput from "./components/GenderInput/GenderInput";
 import ArbutusSlab from "../../public/fonts/Arbutus_Slab";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { firebaseAuth, googleAuthProvider } from "./auth/firebase/firebaseApp";
+import { signInWithPopup } from "firebase/auth";
 
 const theme = createTheme({
   palette: {
@@ -61,6 +63,15 @@ export default function Home() {
     } catch (error) {
       console.error("Error occurred while logging in:", error.message);
       throw error;
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try{
+      const result = await signInWithPopup(firebaseAuth , googleAuthProvider);
+      console.log(result)
+    } catch (error){
+      console.log(error)
     }
   };
 
@@ -175,6 +186,7 @@ export default function Home() {
                   <div
                     className={`${ArbutusSlab.className} flex_row_center `}
                     id={styles.googleAuth}
+                    onClick={handleGoogleLogin}
                   >
                     <p>
                       <u>or sign up with &nbsp;</u>
