@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
+import jwt from "jsonwebtoken";
 
-const dataSchema = new mongoose.Schema({
+const UserData = new mongoose.Schema({
   name: {
     type: String,
     // required: true
@@ -9,11 +10,15 @@ const dataSchema = new mongoose.Schema({
     type: String,
     // required: true
   },
+  username: {
+    type: String,
+    // required: true
+  },
   password: {
     type: String,
     // required: true
   },
-  image: {
+  profileImage: {
     type: String,
     // required: true
   },
@@ -37,8 +42,41 @@ const dataSchema = new mongoose.Schema({
     type: Array,
     // required: true
   },
+  role: {
+    type: String,
+    default: "user",
+    // required: true
+  },
 });
 
-const dataSet = mongoose.model("User", dataSchema);
+UserData.methods.generateAccessToken = function () {
+  return jwt.sign(
+    {
+      _id: this._id,
+      username: this.username,
+      role: this.role,
+    },
+    process.env.AccessToken_SECRET,
+    {
+      expiresIn: process.env.AccessToken_EXPIRY,
+    }
+  );
+};
 
-export default dataSet;
+UserData.methods.generateRefreshToken = function () {
+  return jwt.sign(
+    {
+      _id: this._id,
+      username: this.username,
+      role: this.role,
+    },
+    process.env.RefreshToken_SECRET,
+    {
+      expiresIn: process.env.RefreshToken_EXPIRY,
+    }
+  );
+};
+
+const User = mongoose.model("User", UserData);
+
+export default User;

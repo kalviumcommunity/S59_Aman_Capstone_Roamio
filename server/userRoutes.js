@@ -1,12 +1,28 @@
 import express from "express";
 import User from "./schema/userSchema.js";
 import jwt from "jsonwebtoken";
-import imageRouter from "./uploadImage.js";
 import dotenv from "dotenv";
+import { ApiError } from "./utils/ApiError.js";
 
 dotenv.config();
 
 const userRoutes = express.Router();
+
+const generateAccessTokenAndRefreshToken = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+    const accessToken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken();
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
+    return { accessToken, refreshToken };
+  } catch (error) {
+    throw new ApiError(
+      500,
+      "Error occured while generating accessToken and refreshToken"
+    );
+  }
+};
 
 userRoutes.get("/", async (req, res) => {
   try {
@@ -78,13 +94,20 @@ userRoutes.post("/login", async (req, res) => {
         .status(401)
         .json({ message: "Incorrect password! Please try again." });
     }
-    const token = jwt.sign({ userId: user._id }, process.env.SECRET, {
-      expiresIn: "1h",
-    });
-    console.log(`${user.name} verified successfully !🎉`);
+
+    const { accessToken, refreshToken } =
+      await generateAccessTokenAndRefreshToken(user._id);
+
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+    console.log(`${user.name} logged in successfully !🎉`)
     return res
       .status(200)
-      .json({ message: `${user.name} logged in successfully !🎉`, token });
+      .cookie("accessToken", accessToken)
+      .cookie("refreshToken", refreshToken, options)
+      .json({ message: `${user.name} logged in successfully !🎉`});
   } catch (error) {
     console.error("Error while logging in", error);
     return res.status(500).json({
@@ -92,7 +115,5 @@ userRoutes.post("/login", async (req, res) => {
     });
   }
 });
-
-userRoutes.use("/uploadProfile", imageRouter);
 
 export default userRoutes;
