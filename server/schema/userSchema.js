@@ -63,6 +63,23 @@ UserData.methods.generateAccessToken = function () {
   );
 };
 
+const PEPPER_SECRET = process.env.PEPPER_SECRET;
+
+UserData.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+
+  const pepperedPassword = this.password + PEPPER_SECRET;
+
+  const saltRounds = process.env.SALT_ROUNDS;
+
+  this.password = await bcrypt.hash(pepperedPassword, saltRounds);
+  next();
+});
+
+UserData.methods.isPasswordCorrect = async function (password) {
+  return await bcrypt.compare(password + PEPPER_SECRET, this.password);
+};
+
 UserData.methods.generateRefreshToken = function () {
   return jwt.sign(
     {
