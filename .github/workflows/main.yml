@@ -1,0 +1,21 @@
+name: Auto Comment on PR
+
+on:
+  pull_request:
+
+jobs:
+  auto-comment:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Create Comment
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          COMMENT="@CodiumAI-Agent /review"
+          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          COMMENT_URL="https://api.github.com/repos/${{ github.repository }}/issues/${PR_NUMBER}/comments"
+
+          curl -s -H "Authorization: token ${GITHUB_TOKEN}" -X POST $COMMENT_URL -d "{\"body\":\"$COMMENT\"}"
