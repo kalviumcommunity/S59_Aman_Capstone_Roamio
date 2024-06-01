@@ -1,9 +1,14 @@
 import express from "express";
-import User from "./schema/userSchema.js";
+import User from "./models/user.model.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { ApiError } from "./utils/ApiError.js";
-
+import {
+  uploadFileTypeValidate,
+  validateFileSize,
+} from "./middlewares/UploadFileValidate.js";
+import uploadFileToFirebase from "./middlewares/uploadFileToFirebase.js";
+import { addUser } from "./controllers/user.controller.js";
 dotenv.config();
 
 const userRoutes = express.Router();
@@ -37,30 +42,10 @@ userRoutes.get("/", async (req, res) => {
   }
 });
 
-userRoutes.post("/add-user", async (req, res) => {
-  const newUser = new User({
-    userID: req.body.userID,
-    name: req.body.name,
-    image: req.body.image,
-    email: req.body.email,
-    password: req.body.password,
-    mobileNumber: req.body.mobileNumber,
-    friends: req.body.friends,
-    trips: req.body.trips,
-    posts: req.body.posts,
-    badges: req.body.badges,
-  });
-  try {
-    const saveUser = await newUser.save();
-    res.json(`${newUser.name} joined Roamio successfully.🎉`);
-    console.log(`${newUser.name} joined Roamio successfully.🎉`);
-  } catch (err) {
-    console.log("Error occurred while adding the user " + err);
-    res
-      .status(500)
-      .json({ error: "An error occurred while adding you to our database." });
-  }
-});
+userRoutes.post('/add-user', uploadFileTypeValidate, validateFileSize, (req, res, next) => {
+  uploadFileToFirebase('profile', req, res, next);
+}, addUser);
+
 
 userRoutes.get("/userExist", async (req, res) => {
   try {
@@ -102,12 +87,12 @@ userRoutes.post("/login", async (req, res) => {
       httpOnly: true,
       secure: true,
     };
-    console.log(`${user.name} logged in successfully !🎉`)
+    console.log(`${user.username} logged in successfully !🎉`);
     return res
       .status(200)
-      .cookie("accessToken", accessToken)
+      .cookie("accessToken", accessToken, options)
       .cookie("refreshToken", refreshToken, options)
-      .json({ message: `${user.name} logged in successfully !🎉`});
+      .json({ message: `${user.username} logged in successfully !🎉` });
   } catch (error) {
     console.error("Error while logging in", error);
     return res.status(500).json({

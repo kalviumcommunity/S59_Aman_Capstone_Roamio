@@ -93,12 +93,12 @@ const UserData = new mongoose.Schema(
           "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character, and be at least 8 characters long.",
       },
     },
-    profileImage: {
+    profileImage: [{
       type: String,
       defult: function () {
         return getDefaultProfileImage(this.gender);
       },
-    },
+    }],
     mobileNumber: {
       type: Number,
       required: [true, "Mobile Number is required"],
