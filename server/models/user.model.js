@@ -93,12 +93,14 @@ const UserData = new mongoose.Schema(
           "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character, and be at least 8 characters long.",
       },
     },
-    profileImage: [{
-      type: String,
-      defult: function () {
-        return getDefaultProfileImage(this.gender);
+    profileImage: [
+      {
+        type: String,
+        defult: function () {
+          return getDefaultProfileImage(this.gender);
+        },
       },
-    }],
+    ],
     mobileNumber: {
       type: Number,
       required: [true, "Mobile Number is required"],
@@ -148,7 +150,7 @@ const UserData = new mongoose.Schema(
 const PEPPER_SECRET = process.env.PEPPER_SECRET;
 
 UserData.methods.generateAccessToken = function () {
-  return jwt.sign(
+  const accessToken = jwt.sign(
     {
       _id: this._id,
       username: this.username,
@@ -159,10 +161,11 @@ UserData.methods.generateAccessToken = function () {
       expiresIn: process.env.AccessToken_EXPIRY,
     }
   );
+  return accessToken;
 };
 
 UserData.methods.generateRefreshToken = function () {
-  return jwt.sign(
+  const newRefreshToken = jwt.sign(
     {
       _id: this._id,
       username: this.username,
@@ -175,6 +178,8 @@ UserData.methods.generateRefreshToken = function () {
       expiresIn: process.env.RefreshToken_EXPIRY,
     }
   );
+  this.refreshToken = newRefreshToken;
+  return newRefreshToken;
 };
 
 UserData.pre("save", async function (next) {

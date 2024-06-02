@@ -3,26 +3,26 @@ import mongoose from "mongoose";
 const postSchema = new mongoose.Schema(
   {
     createdBy: {
-      type: mongoose.Schema.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: [true, "createdBy is required"],
     },
     collaborators: [
       {
-        type: mongoose.Schema.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
     ],
     likes: [
       {
-        type: mongoose.Schema.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
     ],
     comment: [
       {
         userId: {
-          type: mongoose.Schema.ObjectId,
+          type: mongoose.Schema.Types.ObjectId,
           ref: "User",
           required: true,
         },
