@@ -1,8 +1,8 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import userRoutes from "./userRoutes.js";
-import postRoutes from "./postRoutes.js";
+import userRoutes from "./routes/user.route.js";
+import postRoutes from "./routes/post.route.js";
 import { connectDB, isConnected } from "./db.js";
 import cookieParser from "cookie-parser";
 
