@@ -150,36 +150,48 @@ const UserData = new mongoose.Schema(
 const PEPPER_SECRET = process.env.PEPPER_SECRET;
 
 UserData.methods.generateAccessToken = function () {
-  const accessToken = jwt.sign(
-    {
-      _id: this._id,
-      username: this.username,
-      role: this.role,
-    },
-    process.env.AccessToken_SECRET,
-    {
-      expiresIn: process.env.AccessToken_EXPIRY,
-    }
-  );
-  return accessToken;
+  try {
+    const accessToken = jwt.sign(
+      {
+        _id: this._id,
+        username: this.username,
+        role: this.role,
+      },
+      process.env.AccessToken_SECRET,
+      {
+        expiresIn: process.env.AccessToken_EXPIRY,
+      }
+    );
+    return accessToken;
+  } catch (error) {
+    console.error("Error generating the access Token: ", error);
+  }
 };
 
 UserData.methods.generateRefreshToken = function () {
-  const newRefreshToken = jwt.sign(
-    {
-      _id: this._id,
-      username: this.username,
-      role: this.role,
-    },
-
-    process.env.RefreshToken_SECRET,
-
-    {
-      expiresIn: process.env.RefreshToken_EXPIRY,
+  try {
+    if (!process.env.AccessToken_SECRET) {
+      console.error("Missing jwt secret environment variables");
+      process.exit(1);
     }
-  );
-  this.refreshToken = newRefreshToken;
-  return newRefreshToken;
+    const newRefreshToken = jwt.sign(
+      {
+        _id: this._id,
+        username: this.username,
+        role: this.role,
+      },
+
+      process.env.RefreshToken_SECRET,
+
+      {
+        expiresIn: process.env.RefreshToken_EXPIRY,
+      }
+    );
+    this.refreshToken = newRefreshToken;
+    return newRefreshToken;
+  } catch (error) {
+    console.error("Error generating the refresh Token: ", error);
+  }
 };
 
 UserData.pre("save", async function (next) {
@@ -187,7 +199,7 @@ UserData.pre("save", async function (next) {
 
   const pepperedPassword = this.password + PEPPER_SECRET;
 
-  const saltRounds = Number(process.env.SALT_ROUNDS);
+  const saltRounds = Number(process.env.SALT_ROUNDS) || Number(8);
 
   this.password = await bcrypt.hash(pepperedPassword, saltRounds);
 
