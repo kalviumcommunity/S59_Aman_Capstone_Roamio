@@ -151,6 +151,10 @@ const PEPPER_SECRET = process.env.PEPPER_SECRET;
 
 UserData.methods.generateAccessToken = function () {
   try {
+    if (!process.env.RefreshToken_SECRET) {
+      console.error("Missing jwt secret environment variables");
+      process.exit(1);
+    }
     const accessToken = jwt.sign(
       {
         _id: this._id,

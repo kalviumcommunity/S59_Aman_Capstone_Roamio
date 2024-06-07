@@ -16,7 +16,17 @@ const userPublicDetails = asyncHandler(async (req, res, next) => {
     joinedAt: user.createdAt,
   }));
 
-  res.status(200).res(next(new ApiResponse(200, userPublicDetails , "Users public information fetched successfully 🚀🎉")))
+  res
+    .status(200)
+    .res(
+      next(
+        new ApiResponse(
+          200,
+          userPublicDetails,
+          "Users public information fetched successfully 🚀🎉"
+        )
+      )
+    );
 });
 
 const addUser = asyncHandler(async (req, res, next) => {
@@ -74,9 +84,7 @@ const doesUserExist = asyncHandler(async (req, res, next) => {
   if (!user) {
     return res
       .status(200)
-      .json(
-        next(new ApiResponse(404, { userFound: false }, "User not found!"))
-      );
+      .json(new ApiResponse(200, { userFound: false }, "User not found!"));
   }
 
   const foundUser = {
@@ -88,9 +96,7 @@ const doesUserExist = asyncHandler(async (req, res, next) => {
 
   return res
     .status(200)
-    .json(
-      next(new ApiResponse(200, { userFound: true, foundUser }, "User found!"))
-    );
+    .json(new ApiResponse(200, { userFound: true, foundUser }, "User found!"));
 });
 
 const loginUser = asyncHandler(async (req, res, next) => {
@@ -121,15 +127,13 @@ const loginUser = asyncHandler(async (req, res, next) => {
       .cookie("accessToken", accessToken, cookieOptions)
       .cookie("refreshToken", refreshToken, cookieOptions)
       .json(
-        next(
-          new ApiResponse(
-            200,
-            { user: loggedInUser, accessToken, refreshToken },
-            `${user.username} logged in successfully🎉`
-          )
+        new ApiResponse(
+          200,
+          { user: loggedInUser, accessToken, refreshToken },
+          `${user.username} logged in successfully🎉`
         )
       )
   );
 });
 
-export { addUser, doesUserExist, loginUser , userPublicDetails };
+export { addUser, doesUserExist, loginUser, userPublicDetails };
