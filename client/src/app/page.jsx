@@ -16,6 +16,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { firebaseAuth, googleAuthProvider } from "./auth/firebase/firebaseApp";
 import { signInWithPopup } from "firebase/auth";
+import FileUploader from "./components/UploadFile/UploadFile";
+import axios from "axios";
 
 const theme = createTheme({
   palette: {
@@ -35,13 +37,14 @@ export default function Home() {
     handleSubmit,
     formState: { errors },
     trigger,
+    setValue,
   } = useForm();
   const [submitError, setSubmitError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [email, setEmail] = useState(null);
-  const [password, setPassword] = useState(null);
-  const error = { message: submitError };
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const router = useRouter();
+
   const loginValidate = async ({ email, password }) => {
     try {
       const response = await fetch("http://localhost:8081/users/login", {
@@ -55,9 +58,20 @@ export default function Home() {
       if (!response.ok) {
         const errorData = await response.json();
         setSubmitError(errorData.message);
-        console.log(errorData.message);
         return false;
       } else {
+        const responseData = await response.json();
+        // Calculate expiration dates
+        let accessTokenExpires = new Date();
+        accessTokenExpires.setDate(accessTokenExpires.getDate() + 1); // Expires in 1 day
+
+        let refreshTokenExpires = new Date();
+        refreshTokenExpires.setDate(refreshTokenExpires.getDate() + 10); // Expires in 10 days
+
+        let accessTokenExpiresUTC = accessTokenExpires.toUTCString();
+        let refreshTokenExpiresUTC = refreshTokenExpires.toUTCString();
+        document.cookie = `accessToken=${responseData.data.accessToken}; expires=${accessTokenExpiresUTC}; Path=/;`;
+        document.cookie = `refreshToken=${responseData.data.refreshToken}; expires=${refreshTokenExpiresUTC}; Path=/;`;
         return true;
       }
     } catch (error) {
@@ -67,11 +81,11 @@ export default function Home() {
   };
 
   const handleGoogleLogin = async () => {
-    try{
-      const result = await signInWithPopup(firebaseAuth , googleAuthProvider);
-      console.log(result)
-    } catch (error){
-      console.log(error)
+    try {
+      const result = await signInWithPopup(firebaseAuth, googleAuthProvider);
+      console.log(result);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -79,46 +93,45 @@ export default function Home() {
     try {
       const loginSuccess = await loginValidate({ email, password });
       if (loginSuccess) {
-        router.push("/user");
-        console.log("working");
+        router.push("/dashboard/upload")
       }
+      console.log(loginSuccess);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (formData) => {
+    const data = new FormData();
+    data.append("name", formData.name);
+    data.append("email", formData.email);
+    data.append("username", formData.username);
+    data.append("dob", formData.dob);
+    data.append("gender", formData.gender);
+    data.append("password", formData.password);
+    data.append("mobileNumber", formData.mobileNumber);
+    formData.files.forEach((file) => {
+      data.append("files", file);
+    });
     try {
-      const response = await fetch("http://localhost:8081/users/add-user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) {
-        throw new Error("Failed to add User");
-      }
-      setCurrentPage(1);
+      const response = await axios.post(
+        "http://localhost:8081/users/add-user",
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
     } catch (error) {
-      setSubmitError(error.message);
-      console.log(error.message);
+      console.error("Error adding user:", error);
     }
   };
 
   const handleNext = async () => {
-    let validateFields;
-    if (currentPage === 1) {
-      validateFields = ["email"];
-    } else if (currentPage === 2) {
-      validateFields = ["name", "dob", "gender"];
-    } else if (currentPage === 3) {
-      validateFields = ["password"];
-    } else if (currentPage === 4) {
-      validateFields = ["mobileNumber"];
-    }
+    const validateFields = getCurrentPageFields(currentPage);
     const result = await trigger(validateFields);
-    if (result && currentPage != 1) {
+    if (result && currentPage !== 1) {
       setCurrentPage((prevPage) => prevPage + 1);
     }
   };
@@ -130,7 +143,7 @@ export default function Home() {
   const checkUserExistence = async (data) => {
     try {
       const response = await fetch(
-        `http://localhost:8081/users/userExist?email=${encodeURIComponent(
+        `http://localhost:8081/users/doesUserExist?email=${encodeURIComponent(
           data.email
         )}`
       );
@@ -141,11 +154,10 @@ export default function Home() {
       }
 
       const responseData = await response.json();
-      if (!responseData.userFound) {
+      if (!responseData.data.userFound) {
         handleNext();
         setCurrentPage(2);
-      }
-      if (responseData.userFound) {
+      } else {
         handleNext();
         setCurrentPage(5);
       }
@@ -155,10 +167,25 @@ export default function Home() {
     }
   };
 
+  const getCurrentPageFields = (page) => {
+    switch (page) {
+      case 1:
+        return ["email"];
+      case 2:
+        return ["name", "dob", "gender", "files"];
+      case 3:
+        return ["password"];
+      case 4:
+        return ["mobileNumber"];
+      default:
+        return [];
+    }
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <div id={styles.form}>
-        {currentPage == 1 && (
+        {currentPage === 1 && (
           <div id={styles.container} className="flex_row_center">
             <div className={styles.gif}></div>
             <div className="lineVertical"></div>
@@ -211,20 +238,13 @@ export default function Home() {
             </div>
           </div>
         )}
-        {currentPage == 2 && (
+        {currentPage === 2 && (
           <div id={styles.container} className="flex_row_center">
-            <div className={`${styles.gif} flex_column_center`}>
-              <p className={`${ArbutusSlab.className} ${styles.brief}`}>
-                Choose a profile pic😉
+            <div className="flex flex-col justify-evenly items-center h-full py-28">
+              <p className={`${ArbutusSlab.className}`}>
+                Upload your profile image
               </p>
-              <TextField
-                error={!!errors.image}
-                helperText={errors.image ? errors.image.message : ""}
-                id="image-input"
-                label="Image URL"
-                variant="outlined"
-                {...register("image")}
-              />
+              <FileUploader register={register} setValue={setValue} />
             </div>
             <div className="lineVertical"></div>
             <div className={styles.que}>
@@ -267,7 +287,7 @@ export default function Home() {
             </div>
           </div>
         )}
-        {currentPage == 3 && (
+        {currentPage === 3 && (
           <div id={styles.container} className="flex_row_center">
             <div className={styles.gif}></div>
             <div className="lineVertical"></div>
@@ -297,7 +317,7 @@ export default function Home() {
             </div>
           </div>
         )}
-        {currentPage == 4 && (
+        {currentPage === 4 && (
           <div id={styles.container} className="flex_row_center">
             <div className={styles.gif}></div>
             <div className="lineVertical"></div>
@@ -307,7 +327,7 @@ export default function Home() {
                 onSubmit={handleSubmit(onSubmit)}
               >
                 <p className={`${ArbutusSlab.className} ${styles.brief}`}>
-                  Enter your mobile number :
+                  Enter your mobile number:
                 </p>
                 <div>
                   <TextField
@@ -336,7 +356,7 @@ export default function Home() {
             </div>
           </div>
         )}
-        {currentPage == 5 && (
+        {currentPage === 5 && (
           <div id={styles.container} className="flex_row_center">
             <div className={styles.gif}></div>
             <div className="lineVertical"></div>
@@ -346,13 +366,13 @@ export default function Home() {
                 onSubmit={handleSubmit(onSubmit)}
               >
                 <p className={`${ArbutusSlab.className} ${styles.brief}`}>
-                  Welcome back ! please enter your password to login
+                  Welcome back! Please enter your password to login
                 </p>
                 <PasswordInput
                   name="password"
                   register={register}
-                  error={error}
-                  setPassword={setPassword}
+                  error={errors.password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
                 {submitError && <p style={{ color: "red" }}>{submitError}</p>}
 
@@ -362,9 +382,7 @@ export default function Home() {
                   </Button>
                   <Button
                     variant="contained"
-                    onClick={() => {
-                      handleLoginClick({ email, password });
-                    }}
+                    onClick={() => handleLoginClick({ email, password })}
                   >
                     Login
                   </Button>

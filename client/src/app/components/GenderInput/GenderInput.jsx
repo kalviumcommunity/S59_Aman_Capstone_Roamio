@@ -1,8 +1,8 @@
 import React from "react";
-import styles from "./GenderInput.module.css";
-import ArbutusSlab from "../../../../public/fonts/Arbutus_Slab";
+import { FormHelperText } from "@mui/material";
 import Image from "next/image";
-import FormHelperText from "@mui/material/FormHelperText";
+import ArbutusSlab from "../../../../public/fonts/Arbutus_Slab";
+import styles from "./GenderInput.module.css";
 
 function GenderInput({ register, error }) {
   return (
@@ -30,7 +30,7 @@ function GenderInput({ register, error }) {
           className={styles.inputHidden}
           {...register("gender", { required: "Please select your gender" })}
         />
-        <label for="female">
+        <label htmlFor="female">
           <div>
             <Image
               src="/femaleVector.png"

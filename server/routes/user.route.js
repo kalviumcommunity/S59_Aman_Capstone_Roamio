@@ -8,6 +8,7 @@ import {
   addUser,
   doesUserExist,
   loginUser,
+  logoutUser,
   userPublicDetails,
 } from "../controllers/user.controller.js";
 import { rateLimit } from "express-rate-limit";
@@ -34,5 +35,7 @@ userRoutes.post(
 userRoutes.get("/doesUserExist", doesUserExist);
 
 userRoutes.post("/login", loginLimiter, loginUser);
+
+userRoutes.post("/logout", logoutUser);
 
 export default userRoutes;
