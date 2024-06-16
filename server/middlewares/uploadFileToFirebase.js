@@ -39,11 +39,11 @@ async function uploadFileToFirebase(directoryName, req, res, next) {
         const uploadFile = await uploadBytesResumable(
           storageRef,
           file.buffer,
-          metadata
+          metadata,
         );
         const imageURL = await getDownloadURL(uploadFile.ref);
         postImageLinks.push(imageURL);
-      })
+      }),
     );
 
     req.fileLinks = postImageLinks;
@@ -52,8 +52,8 @@ async function uploadFileToFirebase(directoryName, req, res, next) {
     next(
       new ApiError(
         500,
-        `An error occurred while uploading and creating file link: ${error.message}`
-      )
+        `An error occurred while uploading and creating file link: ${error.message}`,
+      ),
     );
   }
 }

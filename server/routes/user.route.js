@@ -29,7 +29,7 @@ userRoutes.post(
   (req, res, next) => {
     uploadFileToFirebase("profile", req, res, next);
   },
-  addUser
+  addUser,
 );
 
 userRoutes.get("/doesUserExist", doesUserExist);

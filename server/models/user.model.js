@@ -144,7 +144,7 @@ const UserData = new mongoose.Schema(
   {
     timestamps: true,
     strict: true,
-  }
+  },
 );
 
 const PEPPER_SECRET = process.env.PEPPER_SECRET;
@@ -163,7 +163,7 @@ UserData.methods.generateAccessToken = function () {
       process.env.AccessToken_SECRET,
       {
         expiresIn: process.env.AccessToken_EXPIRY,
-      }
+      },
     );
     return accessToken;
   } catch (error) {
@@ -188,7 +188,7 @@ UserData.methods.generateRefreshToken = function () {
 
       {
         expiresIn: process.env.RefreshToken_EXPIRY,
-      }
+      },
     );
     this.refreshToken = newRefreshToken;
     return newRefreshToken;
