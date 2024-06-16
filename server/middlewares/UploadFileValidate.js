@@ -16,8 +16,8 @@ const uploadFileTypeValidate = multer({
     if (!allowedMimeTypes.includes(file.mimetype)) {
       return cb(
         new Error(
-          "Invalid file type. Only JPEG, JPG, PNG, AVIF, MP4, and MKV are allowed."
-        )
+          "Invalid file type. Only JPEG, JPG, PNG, AVIF, MP4, and MKV are allowed.",
+        ),
       );
     }
     cb(null, true);
@@ -38,15 +38,15 @@ const validateFileSize = (req, res, next) => {
           new Error(
             `Video file size should not exceed ${
               maxVideoSize / (1024 * 1024)
-            } MB`
-          )
+            } MB`,
+          ),
         );
       }
     } else if (file.size > maxImageSize) {
       return next(
         new Error(
-          `Image file size should not exceed ${maxImageSize / (1024 * 1024)} MB`
-        )
+          `Image file size should not exceed ${maxImageSize / (1024 * 1024)} MB`,
+        ),
       );
     }
   }

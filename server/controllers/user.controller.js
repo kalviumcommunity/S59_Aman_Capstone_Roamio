@@ -22,8 +22,8 @@ const userPublicDetails = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         userPublicDetails,
-        "Users public information fetched successfully 🚀🎉"
-      )
+        "Users public information fetched successfully 🚀🎉",
+      ),
     );
 });
 
@@ -40,7 +40,7 @@ const addUser = asyncHandler(async (req, res, next) => {
 
   if (existedUser) {
     return next(
-      new ApiError(409, "User with email or username already exists")
+      new ApiError(409, "User with email or username already exists"),
     );
   }
 
@@ -61,7 +61,7 @@ const addUser = asyncHandler(async (req, res, next) => {
 
   if (!createdUser) {
     return next(
-      new ApiError(500, "Something went wrong while registering the user.")
+      new ApiError(500, "Something went wrong while registering the user."),
     );
   }
   console.log(`${createdUser.name} registered Successfully🎉`);
@@ -71,8 +71,8 @@ const addUser = asyncHandler(async (req, res, next) => {
       new ApiResponse(
         200,
         createdUser,
-        `${createdUser.name} registered Successfully🎉`
-      )
+        `${createdUser.name} registered Successfully🎉`,
+      ),
     );
 });
 
@@ -134,8 +134,8 @@ const loginUser = asyncHandler(async (req, res, next) => {
       new ApiResponse(
         200,
         { user: loggedInUser, accessToken, refreshToken },
-        `${user.username} logged in successfully🎉`
-      )
+        `${user.username} logged in successfully🎉`,
+      ),
     );
 });
 

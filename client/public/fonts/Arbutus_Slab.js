@@ -1,14 +1,9 @@
-import React from 'react'
-import { Arbutus_Slab } from '@next/font/google'
-
+import React from "react";
+import { Arbutus_Slab } from "@next/font/google";
 
 const ArbutusSlab = Arbutus_Slab({
-  subsets: ['latin'],
-  weight: ['400']
-})
+  subsets: ["latin"],
+  weight: ["400"],
+});
 
-export default ArbutusSlab
-
-
-
-
+export default ArbutusSlab;

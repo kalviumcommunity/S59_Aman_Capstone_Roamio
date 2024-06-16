@@ -12,9 +12,9 @@ const publicPost = asyncHandler(async (req, res, next) => {
         new ApiResponse(
           200,
           publicPost,
-          "public posts fetched successfully!🎉🚀"
-        )
-      )
+          "public posts fetched successfully!🎉🚀",
+        ),
+      ),
     );
 });
 
@@ -43,9 +43,9 @@ const uploadNewPost = asyncHandler(async (req, res, next) => {
         new ApiResponse(
           200,
           { newPost },
-          `${createdBy} uploaded a post successfully. 🎉🚀`
-        )
-      )
+          `${createdBy} uploaded a post successfully. 🎉🚀`,
+        ),
+      ),
     );
 });
 

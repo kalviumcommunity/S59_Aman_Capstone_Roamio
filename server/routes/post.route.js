@@ -14,7 +14,7 @@ postRoutes.post(
   validateFileSize,
   (req, res, next) => {
     uploadFileToFirebase("posts", req, res, next), uploadNewPost;
-  }
+  },
 );
 
 postRoutes.get("/publicPost", publicPost);

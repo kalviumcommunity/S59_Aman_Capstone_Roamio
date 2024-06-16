@@ -93,7 +93,7 @@ export default function Home() {
     try {
       const loginSuccess = await loginValidate({ email, password });
       if (loginSuccess) {
-        router.push("/dashboard/upload")
+        router.push("/dashboard/upload");
       }
       console.log(loginSuccess);
     } catch (error) {
@@ -121,7 +121,7 @@ export default function Home() {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        }
+        },
       );
     } catch (error) {
       console.error("Error adding user:", error);
@@ -144,8 +144,8 @@ export default function Home() {
     try {
       const response = await fetch(
         `http://localhost:8081/users/doesUserExist?email=${encodeURIComponent(
-          data.email
-        )}`
+          data.email,
+        )}`,
       );
 
       if (!response.ok) {
