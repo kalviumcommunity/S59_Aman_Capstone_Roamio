@@ -23,7 +23,7 @@ const uploadFileTypeValidate = multer({
     cb(null, true);
   },
   limits: {
-    fileSize: 15 * 1024 * 1024, // Set the maximum file size limit to 15 MB
+    fileSize: 15 * 1024 * 1024, // 15 MB
   },
 }).array("files", 5); // Limit to 5 files
 

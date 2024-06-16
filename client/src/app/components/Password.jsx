@@ -5,8 +5,9 @@ import IconButton from "@mui/material/IconButton";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import FormHelperText from "@mui/material/FormHelperText";
+import InputAdornment from "@mui/material/InputAdornment";
 
-const PasswordInput = ({ register, name, error, setPassword }) => {
+const PasswordInput = ({ register, name, error, onChange }) => {
   const [showPassword, setShowPassword] = React.useState(false);
 
   const togglePasswordVisibility = () => {
@@ -22,15 +23,17 @@ const PasswordInput = ({ register, name, error, setPassword }) => {
         {...register(name, { required: "Password is required" })}
         type={showPassword ? "text" : "password"}
         placeholder="Enter your Password"
-        onChange={(e) => setPassword(e.target.value)}
+        onChange={onChange}
         endAdornment={
-          <IconButton
-            onClick={togglePasswordVisibility}
-            onMouseDown={handleMouseDownPassword}
-            edge="end"
-          >
-            {showPassword ? <Visibility /> : <VisibilityOff />}
-          </IconButton>
+          <InputAdornment position="end">
+            <IconButton
+              onClick={togglePasswordVisibility}
+              onMouseDown={handleMouseDownPassword}
+              edge="end"
+            >
+              {showPassword ? <Visibility /> : <VisibilityOff />}
+            </IconButton>
+          </InputAdornment>
         }
         error={!!error}
       />
@@ -38,17 +41,18 @@ const PasswordInput = ({ register, name, error, setPassword }) => {
     </div>
   );
 };
+
 const StyledInput = styled(InputBase)(({ theme, error }) => ({
   "& .MuiInputBase-input": {
     borderRadius: 4,
     position: "relative",
-    border: `1.5px solid ${error ? "red" : ""}`,
+    border: `1.5px solid ${error ? "red" : theme.palette.primary.main}`,
     fontSize: 16,
-    width: "auto",
+    width: "100%",
     padding: "10px 12px",
     transition: theme.transitions.create(["border-color", "box-shadow"]),
     "&:focus": {
-      boxShadow: `${theme.palette.primary.main} 0 0 0 1.5px`,
+      boxShadow: `${theme.palette.primary.main} 0 0 0 2px`,
       borderColor: theme.palette.primary.main,
     },
   },
