@@ -1,0 +1,22 @@
+meta {
+  name: add user(with files)
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{server}}/users/add-user
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  name: John Doe
+  email: john.doe@example.com
+  username: johndoe
+  dob: 1990-05-15
+  gender: male
+  password: Password@123
+  mobileNumber: 1234567890
+  files: @file(C:\Users\amana\OneDrive\Desktop\roamioLogo.png)
+}
