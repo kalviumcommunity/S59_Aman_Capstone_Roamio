@@ -9,6 +9,7 @@ import {
   doesUserExist,
   loginUser,
   logoutUser,
+  refreshAccessToken,
   userPublicDetails,
 } from "../controllers/user.controller.js";
 import { rateLimit } from "express-rate-limit";
@@ -29,7 +30,7 @@ userRoutes.post(
   (req, res, next) => {
     uploadFileToFirebase("profile", req, res, next);
   },
-  addUser,
+  addUser
 );
 
 userRoutes.get("/doesUserExist", doesUserExist);
@@ -37,5 +38,7 @@ userRoutes.get("/doesUserExist", doesUserExist);
 userRoutes.post("/login", loginLimiter, loginUser);
 
 userRoutes.post("/logout", logoutUser);
+
+userRoutes.post("/refreshAccessToken", refreshAccessToken);
 
 export default userRoutes;

@@ -96,7 +96,7 @@ const UserData = new mongoose.Schema(
     profileImage: [
       {
         type: String,
-        defult: function () {
+        default: function () {
           return getDefaultProfileImage(this.gender);
         },
       },

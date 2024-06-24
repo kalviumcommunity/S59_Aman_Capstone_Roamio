@@ -22,8 +22,8 @@ const userPublicDetails = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         userPublicDetails,
-        "Users public information fetched successfully 🚀🎉",
-      ),
+        "Users public information fetched successfully 🚀🎉"
+      )
     );
 });
 
@@ -40,7 +40,7 @@ const addUser = asyncHandler(async (req, res, next) => {
 
   if (existedUser) {
     return next(
-      new ApiError(409, "User with email or username already exists"),
+      new ApiError(409, "User with email or username already exists")
     );
   }
 
@@ -61,7 +61,7 @@ const addUser = asyncHandler(async (req, res, next) => {
 
   if (!createdUser) {
     return next(
-      new ApiError(500, "Something went wrong while registering the user."),
+      new ApiError(500, "Something went wrong while registering the user.")
     );
   }
   console.log(`${createdUser.name} registered Successfully🎉`);
@@ -71,8 +71,8 @@ const addUser = asyncHandler(async (req, res, next) => {
       new ApiResponse(
         200,
         createdUser,
-        `${createdUser.name} registered Successfully🎉`,
-      ),
+        `${createdUser.name} registered Successfully🎉`
+      )
     );
 });
 
@@ -134,13 +134,13 @@ const loginUser = asyncHandler(async (req, res, next) => {
       new ApiResponse(
         200,
         { user: loggedInUser, accessToken, refreshToken },
-        `${user.username} logged in successfully🎉`,
-      ),
+        `${user.username} logged in successfully🎉`
+      )
     );
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
-  await User.findByIdAndUpdate(req.user._id),
+  await User.findByIdAndUpdate(req.userId),
     {
       $unset: {
         refreshToken: 1,
@@ -157,4 +157,53 @@ const logoutUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "User logged out successfully!"));
 });
 
-export { addUser, doesUserExist, loginUser, userPublicDetails, logoutUser };
+const refreshAccessToken = asyncHandler(async (req, res) => {
+  const incomingRefreshToken =
+    req.cookies.refreshToken || req.body.refreshToken;
+
+  if (!incomingRefreshToken) {
+    throw new ApiError(401, "unauthorized request");
+  }
+
+  try {
+    const decodedToken = jwt.verify(
+      incomingRefreshToken,
+      process.env.RefreshToken_SECRET
+    );
+    const user = await User.findById(decodedToken?._id);
+
+    if (!user) {
+      throw new ApiError(401, "Invalid refresh token");
+    }
+
+    if (incomingRefreshToken !== user?.refreshToken) {
+      throw new ApiError(401, "Refresh token is expired or used .");
+    }
+
+    const { accessToken, newRefreshToken } =
+      await generateAccessTokenAndRefreshToken(user._id);
+
+    return res
+      .status(200)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", newRefreshToken, options)
+      .json(
+        new ApiResponse(
+          200,
+          { accessToken, refreshToken: newRefreshToken },
+          "Access token refreshed"
+        )
+      );
+  } catch (error) {
+    throw new ApiError(401, error?.message || "Invalid refresh token");
+  }
+});
+
+export {
+  addUser,
+  doesUserExist,
+  loginUser,
+  userPublicDetails,
+  logoutUser,
+  refreshAccessToken,
+};
