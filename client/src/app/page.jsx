@@ -86,8 +86,6 @@ export default function Home() {
         phoneNumber: user.phoneNumber,
       };
 
-      console.log(userData);
-
       const response = await axios.post(
         "http://localhost:8081/users/googleAuthentication",
         userData

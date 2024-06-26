@@ -242,7 +242,7 @@ const googleAuth = asyncHandler(async (req, res) => {
       username: username,
       dob: "1990-05-15",
       gender: "other",
-      password: uid + metadata.createdAt + "A12a@",
+      password: uid + metadata.createdAt + process.env.GOOGEL_AUTH_PASS_SECRET,
       profileImage: [photoURL],
       mobileNumber: phoneNumber,
       isGoogleSignedUp: true,
@@ -250,7 +250,7 @@ const googleAuth = asyncHandler(async (req, res) => {
 
     user = await newUser.save();
   } else {
-    const password = uid + metadata.createdAt + "A12a@";
+    const password = uid + metadata.createdAt + process.env.GOOGEL_AUTH_PASS_SECRET;
     const isPasswordValid = await user.isPasswordCorrect(password);
 
     if (!isPasswordValid) {
