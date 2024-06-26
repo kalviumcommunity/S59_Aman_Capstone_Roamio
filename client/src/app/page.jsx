@@ -18,6 +18,7 @@ import { firebaseAuth, googleAuthProvider } from "./auth/firebase/firebaseApp";
 import { signInWithPopup } from "firebase/auth";
 import FileUploader from "./components/UploadFile/UploadFile";
 import axios from "axios";
+import setTokenCookies from "@/utils/setTokenCookies";
 
 const theme = createTheme({
   palette: {
@@ -47,31 +48,21 @@ export default function Home() {
 
   const loginValidate = async ({ email, password }) => {
     try {
-      const response = await fetch("http://localhost:8081/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
+      const response = await axios.post("http://localhost:8081/users/login", {
+        email,
+        password,
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
+      if (response.status !== 200) {
+        const errorData = response.data;
         setSubmitError(errorData.message);
         return false;
       } else {
-        const responseData = await response.json();
-        // Calculate expiration dates
-        let accessTokenExpires = new Date();
-        accessTokenExpires.setDate(accessTokenExpires.getDate() + 1); // Expires in 1 day
-
-        let refreshTokenExpires = new Date();
-        refreshTokenExpires.setDate(refreshTokenExpires.getDate() + 10); // Expires in 10 days
-
-        let accessTokenExpiresUTC = accessTokenExpires.toUTCString();
-        let refreshTokenExpiresUTC = refreshTokenExpires.toUTCString();
-        document.cookie = `accessToken=${responseData.data.accessToken}; expires=${accessTokenExpiresUTC}; Path=/;`;
-        document.cookie = `refreshToken=${responseData.data.refreshToken}; expires=${refreshTokenExpiresUTC}; Path=/;`;
+        const responseData = response.data;
+        setTokenCookies(
+          responseData.data.accessToken,
+          responseData.data.refreshToken
+        );
         return true;
       }
     } catch (error) {
@@ -83,9 +74,35 @@ export default function Home() {
   const handleGoogleLogin = async () => {
     try {
       const result = await signInWithPopup(firebaseAuth, googleAuthProvider);
-      console.log(result);
+      const user = result.user;
+
+      const userData = {
+        displayName: user.displayName,
+        email: user.email,
+        photoURL: user.photoURL,
+        uid: user.uid,
+        emailVerified: user.emailVerified,
+        metadata: user.metadata,
+        phoneNumber: user.phoneNumber,
+      };
+
+      const response = await axios.post(
+        "http://localhost:8081/users/googleAuthentication",
+        userData
+      );
+
+      if (response.status === 200) {
+        const responseData = response.data;
+        setTokenCookies(
+          responseData.data.accessToken,
+          responseData.data.refreshToken
+        );
+        router.push("/dashboard/upload");
+      } else {
+        console.error("Login failed:", response.data);
+      }
     } catch (error) {
-      console.log(error);
+      console.error("Error during Google login:", error);
     }
   };
 
@@ -121,8 +138,21 @@ export default function Home() {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        },
+        }
       );
+
+      if (response.status !== 200) {
+        const errorData = response.data;
+        setSubmitError(errorData.message);
+        return false;
+      } else {
+        const responseData = response.data;
+        setTokenCookies(
+          responseData.data.accessToken,
+          responseData.data.refreshToken
+        );
+        router.push("/dashboard/upload");
+      }
     } catch (error) {
       console.error("Error adding user:", error);
     }
@@ -144,8 +174,8 @@ export default function Home() {
     try {
       const response = await fetch(
         `http://localhost:8081/users/doesUserExist?email=${encodeURIComponent(
-          data.email,
-        )}`,
+          data.email
+        )}`
       );
 
       if (!response.ok) {
@@ -154,7 +184,12 @@ export default function Home() {
       }
 
       const responseData = await response.json();
-      if (!responseData.data.userFound) {
+      console.log(responseData.data);
+      if (responseData.data.isGoogleSignedUp) {
+        setSubmitError(
+          "This mail is already signed up using google auth provider."
+        );
+      } else if (!responseData.data.userFound) {
         handleNext();
         setCurrentPage(2);
       } else {
