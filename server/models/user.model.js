@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 
 function validatePassword(password) {
   const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/;
   return passwordRegex.test(password);
 }
 
@@ -103,7 +103,8 @@ const UserData = new mongoose.Schema(
     ],
     mobileNumber: {
       type: Number,
-      required: [true, "Mobile Number is required"],
+      // removed required because sometimes mobile number is not availbale in google auth.
+      // required: [true, "Mobile Number is required"],
     },
     freinds: [
       {
@@ -144,7 +145,7 @@ const UserData = new mongoose.Schema(
   {
     timestamps: true,
     strict: true,
-  },
+  }
 );
 
 const PEPPER_SECRET = process.env.PEPPER_SECRET;
@@ -163,7 +164,7 @@ UserData.methods.generateAccessToken = function () {
       process.env.AccessToken_SECRET,
       {
         expiresIn: process.env.AccessToken_EXPIRY,
-      },
+      }
     );
     return accessToken;
   } catch (error) {
@@ -188,7 +189,7 @@ UserData.methods.generateRefreshToken = function () {
 
       {
         expiresIn: process.env.RefreshToken_EXPIRY,
-      },
+      }
     );
     this.refreshToken = newRefreshToken;
     return newRefreshToken;

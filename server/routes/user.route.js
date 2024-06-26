@@ -7,6 +7,7 @@ import uploadFileToFirebase from "../middlewares/uploadFileToFirebase.js";
 import {
   addUser,
   doesUserExist,
+  googleAuth,
   loginUser,
   logoutUser,
   refreshAccessToken,
@@ -40,5 +41,7 @@ userRoutes.post("/login", loginLimiter, loginUser);
 userRoutes.post("/logout", logoutUser);
 
 userRoutes.post("/refreshAccessToken", refreshAccessToken);
+
+userRoutes.post("/googleAuthentication", googleAuth);
 
 export default userRoutes;

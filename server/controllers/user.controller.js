@@ -4,6 +4,7 @@ import User from "../models/user.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import generateAccessTokenAndRefreshToken from "../utils/generateAccessAndRefreshToken.js";
 import { cookieOptions } from "../config/cookies.config.js";
+import generateRandomString from "../utils/randomString.js";
 
 const userPublicDetails = asyncHandler(async (req, res) => {
   const users = await User.find();
@@ -44,6 +45,12 @@ const addUser = asyncHandler(async (req, res, next) => {
     );
   }
 
+  if (!username) {
+    const nameWithoutSpaces = name.replace(/\s+/g, "");
+    const randomString = generateRandomString(3);
+    username = nameWithoutSpaces + randomString;
+  }
+
   const newUser = await User.create({
     name,
     email,
@@ -65,12 +72,22 @@ const addUser = asyncHandler(async (req, res, next) => {
     );
   }
   console.log(`${createdUser.name} registered Successfully🎉`);
+
+  const { accessToken, refreshToken } =
+    await generateAccessTokenAndRefreshToken(createdUser._id);
+
+  if (!accessToken || !refreshToken) {
+    throw new ApiError(500, "Failed to generate access and refresh tokens");
+  }
+
   return res
     .status(201)
+    .cookie("accessToken", accessToken, cookieOptions)
+    .cookie("refreshToken", refreshToken, cookieOptions)
     .json(
       new ApiResponse(
         200,
-        createdUser,
+        { createdUser, accessToken, refreshToken },
         `${createdUser.name} registered Successfully🎉`
       )
     );
@@ -94,7 +111,7 @@ const doesUserExist = asyncHandler(async (req, res, next) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, { userFound: true, foundUser }, "User found!"));
+    .json(new ApiResponse(200, { userFound: true, foundUser , isGoogleSignedUp: user.isGoogleSignedUp }, "User found!"));
 });
 
 const loginUser = asyncHandler(async (req, res, next) => {
@@ -152,8 +169,8 @@ const logoutUser = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .clearCookie("accessToken", options)
-    .clearCookie("refreshToken", options)
+    .clearCookie("accessToken", cookieOptions)
+    .clearCookie("refreshToken", cookieOptions)
     .json(new ApiResponse(200, {}, "User logged out successfully!"));
 });
 
@@ -185,8 +202,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
     return res
       .status(200)
-      .cookie("accessToken", accessToken, options)
-      .cookie("refreshToken", newRefreshToken, options)
+      .cookie("accessToken", accessToken, cookieOptions)
+      .cookie("refreshToken", newRefreshToken, cookieOptions)
       .json(
         new ApiResponse(
           200,
@@ -199,6 +216,72 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   }
 });
 
+const googleAuth = asyncHandler(async (req, res) => {
+  const {
+    displayName,
+    email,
+    photoURL,
+    uid,
+    emailVerified,
+    metadata,
+    phoneNumber,
+  } = req.body;
+
+  if (!emailVerified) {
+    throw new ApiError(401, "Google mail not verified .");
+  }
+
+  let user = await User.findOne({ email });
+  if (!user) {
+    const nameWithoutSpaces = displayName.replace(/\s+/g, "");
+    const randomString = generateRandomString(3);
+    const username = nameWithoutSpaces + randomString;
+    const newUser = new User({
+      name: displayName,
+      email,
+      username: username,
+      dob: "1990-05-15",
+      gender: "other",
+      password: uid + metadata.createdAt + "A12a@",
+      profileImage: [photoURL],
+      mobileNumber: phoneNumber,
+      isGoogleSignedUp: true,
+    });
+
+    user = await newUser.save();
+  } else {
+    const password = uid + metadata.createdAt + "A12a@";
+    const isPasswordValid = await user.isPasswordCorrect(password);
+
+    if (!isPasswordValid) {
+      throw new ApiError(401, "Invalid user credentials");
+    }
+  }
+
+  const { accessToken, refreshToken } =
+    await generateAccessTokenAndRefreshToken(user._id);
+
+  if (!accessToken || !refreshToken) {
+    throw new ApiError(500, "Failed to generate access and refresh tokens");
+  }
+
+  const loggedInUser = await User.findById(user._id)
+    .select("-password -refreshToken")
+    .lean();
+
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, cookieOptions)
+    .cookie("refreshToken", refreshToken, cookieOptions)
+    .json(
+      new ApiResponse(
+        200,
+        { user: loggedInUser, accessToken, refreshToken },
+        "User logged in successfully 🎉"
+      )
+    );
+});
+
 export {
   addUser,
   doesUserExist,
@@ -206,4 +289,5 @@ export {
   userPublicDetails,
   logoutUser,
   refreshAccessToken,
+  googleAuth,
 };
