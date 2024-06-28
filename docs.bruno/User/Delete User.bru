@@ -1,0 +1,19 @@
+meta {
+  name: Delete User
+  type: http
+  seq: 10
+}
+
+delete {
+  url: {{server}}/users/deleteUser
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjdmMTg3NzJmNmE4NTMyMjA1YmUzZTEiLCJ1c2VybmFtZSI6ImpvaG5kb2UiLCJyb2xlIjoidXNlciIsImlhdCI6MTcxOTYwNTM2NywiZXhwIjoxNzE5NjkxNzY3fQ.3GnvK0CPPfQ9BWpdufbciwJH7Hk5JJZesecmevnVcCI
+}
+
+body:json {
+  {}
+}

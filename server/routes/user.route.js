@@ -6,12 +6,17 @@ import {
 import uploadFileToFirebase from "../middlewares/uploadFileToFirebase.js";
 import {
   addUser,
+  deleteUser,
   doesUserExist,
   googleAuth,
   loginUser,
   logoutUser,
   refreshAccessToken,
+  updatePasswordUsingOldPassword,
+  updateUserDetails,
+  userDetails,
   userPublicDetails,
+  verifyUser,
 } from "../controllers/user.controller.js";
 import { rateLimit } from "express-rate-limit";
 
@@ -43,5 +48,26 @@ userRoutes.post("/logout", logoutUser);
 userRoutes.post("/refreshAccessToken", refreshAccessToken);
 
 userRoutes.post("/googleAuthentication", googleAuth);
+
+userRoutes.get("/verifyUser", verifyUser);
+
+userRoutes.get("/userDetails", userDetails);
+
+userRoutes.put(
+  "/updateUser",
+  uploadFileTypeValidate,
+  validateFileSize,
+  (req, res, next) => {
+    uploadFileToFirebase("profile", req, res, next);
+  },
+  updateUserDetails
+);
+
+userRoutes.patch(
+  "/updatePasswordUsingOldPassword",
+  updatePasswordUsingOldPassword
+);
+
+userRoutes.delete("/deleteUser", deleteUser);
 
 export default userRoutes;

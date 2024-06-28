@@ -1,0 +1,26 @@
+meta {
+  name: update user(with files)
+  type: http
+  seq: 8
+}
+
+put {
+  url: {{server}}/users/updateUser
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjdmMjNkNDE0NTEyNGIwM2Q5NjVjNGUiLCJ1c2VybmFtZSI6ImpvaG5kb2UiLCJyb2xlIjoidXNlciIsImlhdCI6MTcxOTYwODI3NiwiZXhwIjoxNzE5Njk0Njc2fQ.qzdu3_2ginhLSNs6j93yk9xIL-5Pra_BlX3l4pvIaPA
+}
+
+body:multipart-form {
+  name: John gram
+  email: john.doe@example.com
+  username: johndoe
+  dob: 1990-05-10
+  gender: male
+  password: Password@123
+  mobileNumber: 1234567890
+  files: @file(C:\Users\amana\OneDrive\Desktop\different_phases_of_the_component_lifecycle.png)
+}
