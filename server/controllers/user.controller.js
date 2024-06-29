@@ -376,7 +376,6 @@ const updateUserDetails = asyncHandler(async (req, res) => {
     req.headers.authorization?.replace("Bearer ", "") || req.body.accessToken;
   const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
   const userDetailsToUpdate = req.body;
-  console.log(req.fileLinks);
   if (req.fileLinks.length != 0) {
     userDetailsToUpdate.profileImage = req.fileLinks;
   }
