@@ -19,10 +19,22 @@ import {
   verifyUser,
 } from "../controllers/user.controller.js";
 import { rateLimit } from "express-rate-limit";
+import moment from "moment";
+
+const generateMessage = (retryAfter) => {
+  const retryTime = moment().add(retryAfter, "minutes").format("h:mm:ss A");
+  return `Too many login attempts from this IP. Please try again after ${retryAfter} minutes at ${retryTime}.`;
+};
 
 const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5,
-  message: "too many login attempts from this IP  , Please try again later",
+  message: (req, res) => generateMessage(15),
+  onLimitReached: (req, res, options) => {
+    console.warn(
+      `IP ${req.ip} has been blocked due to too many login attempts.`
+    );
+  },
 });
 
 const userRoutes = express.Router();
