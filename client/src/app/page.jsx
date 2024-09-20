@@ -19,7 +19,8 @@ import { signInWithPopup } from "firebase/auth";
 import FileUploader from "./components/UploadFile/UploadFile";
 import axios from "axios";
 import setTokenCookies from "@/utils/setTokenCookies";
-
+import { useDispatch } from 'react-redux';
+import { signIn } from '../features/userSlice';
 const theme = createTheme({
   palette: {
     primary: {
@@ -33,6 +34,7 @@ const theme = createTheme({
 });
 
 export default function Home() {
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
@@ -59,6 +61,8 @@ export default function Home() {
         return false;
       } else {
         const responseData = response.data;
+        dispatch(signIn(responseData.data.user));
+        console.log("ran")
         setTokenCookies(
           responseData.data.accessToken,
           responseData.data.refreshToken
@@ -93,6 +97,7 @@ export default function Home() {
 
       if (response.status === 200) {
         const responseData = response.data;
+        dispatch(signIn(responseData.data.user));
         setTokenCookies(
           responseData.data.accessToken,
           responseData.data.refreshToken
@@ -275,7 +280,7 @@ export default function Home() {
         )}
         {currentPage === 2 && (
           <div id={styles.container} className="flex_row_center">
-            <div className="flex flex-col justify-evenly items-center h-full py-28">
+            <div className="flex flex-col justify-evenly items-center h-full p-28">
               <p className={`${ArbutusSlab.className}`}>
                 Upload your profile image
               </p>

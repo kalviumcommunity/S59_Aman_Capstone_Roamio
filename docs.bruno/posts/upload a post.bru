@@ -1,0 +1,18 @@
+meta {
+  name: upload a post
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{server}}/posts/uploadPost
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  createdBy: 663d0de609171e4708b6c5ef
+  caption: dont know
+  location: baddi
+  files: @file(C:\Users\amana\Pictures\Screenshots\maleVector.png)
+}

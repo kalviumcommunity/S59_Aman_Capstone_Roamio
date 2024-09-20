@@ -30,11 +30,6 @@ const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5,
   message: (req, res) => generateMessage(15),
-  onLimitReached: (req, res, options) => {
-    console.warn(
-      `IP ${req.ip} has been blocked due to too many login attempts.`
-    );
-  },
 });
 
 const userRoutes = express.Router();
