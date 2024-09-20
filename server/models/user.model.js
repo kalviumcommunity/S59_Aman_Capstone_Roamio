@@ -103,7 +103,7 @@ const UserData = new mongoose.Schema(
     ],
     mobileNumber: {
       type: Number,
-      // removed required because sometimes mobile number is not availbale in google auth.
+      // removed required because sometimes mobile number is not available in google auth.
       // required: [true, "Mobile Number is required"],
     },
     freinds: [

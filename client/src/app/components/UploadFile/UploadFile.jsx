@@ -34,7 +34,7 @@ function FileUploader({ register, setValue }) {
     <div className="flex flex-col items-center justify-center h-full">
       <label htmlFor="fileInput" className="cursor-pointer text-center">
         <div
-          className="border-2 border-dashed border-gray-400 p-8 rounded-lg mx-32"
+          className="border-2 border-dashed border-gray-400 p-8 rounded-lg"
           onDragOver={handleDragOver}
           onDrop={handleDrop}
         >

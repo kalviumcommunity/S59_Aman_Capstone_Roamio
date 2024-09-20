@@ -28,8 +28,8 @@ const uploadFileTypeValidate = multer({
 }).array("files", 5); // Limit to 5 files
 
 const validateFileSize = (req, res, next) => {
-  const maxImageSize = 5 * 1024 * 1024; // 5 MB
-  const maxVideoSize = 15 * 1024 * 1024; // 15 MB
+  const maxImageSize = 5 * 1024 * 1024;
+  const maxVideoSize = 15 * 1024 * 1024;
 
   for (const file of req.files) {
     if (["video/mp4", "video/mkv"].includes(file.mimetype)) {

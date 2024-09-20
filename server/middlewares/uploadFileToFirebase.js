@@ -48,6 +48,7 @@ async function uploadFileToFirebase(directoryName, req, res, next) {
 
     req.fileLinks = postImageLinks;
     next();
+    
   } catch (error) {
     next(
       new ApiError(

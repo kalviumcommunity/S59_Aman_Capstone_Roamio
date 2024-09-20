@@ -4,17 +4,13 @@ import Post from "../models/post.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 const publicPost = asyncHandler(async (req, res, next) => {
-  const publicPost = await Post.find({ isPublicPost: true });
+  const allPosts = await Post.find();
+  console.log(allPosts);
+  const publicPost = await Post.find({});
   res
     .status(200)
     .json(
-      next(
-        new ApiResponse(
-          200,
-          publicPost,
-          "public posts fetched successfully!🎉🚀",
-        ),
-      ),
+      new ApiResponse(200, publicPost, "public posts fetched successfully!🎉🚀")
     );
 });
 
@@ -35,17 +31,14 @@ const uploadNewPost = asyncHandler(async (req, res, next) => {
     location,
     postImage: postImageLinks,
   });
-
   res
     .status(201)
     .json(
-      next(
-        new ApiResponse(
-          200,
-          { newPost },
-          `${createdBy} uploaded a post successfully. 🎉🚀`,
-        ),
-      ),
+      new ApiResponse(
+        200,
+        { newPost },
+        `${createdBy} uploaded a post successfully. 🎉🚀`
+      )
     );
 });
 
